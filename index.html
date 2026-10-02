@@ -1,0 +1,851 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WAB × Inhaus — As Simple as That</title>
+<!-- Chaptered version (v5): edited directly in this file. Earlier generated version kept as index-v4-15-slides-backup.html -->
+<style>
+  :root{
+    --bg:#e8e9eb; --ink:#141517; --soft:#8b8f96; --mid:#55595f; --rule:#d2d5d9; --paper:#f6f7f8;
+    --font:"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+  img{max-width:100%;display:block}
+
+  /* ---------- interactive intro ---------- */
+  #intro{height:2300vh;position:relative}
+  #stage{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--bg)}
+  canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .word{position:absolute;left:0;right:0;top:0;text-align:center;font-weight:700;letter-spacing:-.045em;line-height:1;
+        font-size:clamp(60px,11.5vw,176px);transform-origin:50% 0;will-change:transform,opacity;pointer-events:none;white-space:nowrap}
+  #now{opacity:0}
+  #logo{position:absolute;left:50%;top:0;transform:translate(-50%,0);opacity:0;will-change:transform,opacity;text-align:center;pointer-events:none}
+  #logo img{height:clamp(54px,9vh,96px);width:auto;margin:0 auto}
+  .mark{font-weight:700;font-size:clamp(40px,6.4vh,68px);letter-spacing:.2em;margin-right:-.2em;line-height:1}
+  .marksub{margin-top:10px;font-size:clamp(9.5px,1.25vh,12px);letter-spacing:.3em;text-transform:uppercase;color:var(--mid);white-space:nowrap}
+  #tag{position:absolute;left:0;right:0;top:0;text-align:center;font-weight:700;letter-spacing:-.035em;line-height:1;
+       font-size:clamp(30px,min(7.6vw,12.5vh),118px);opacity:0;will-change:transform,opacity;pointer-events:none;white-space:nowrap}
+  #bar{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;padding:22px 30px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--soft)}
+  #bar b{color:var(--ink);font-weight:700}
+  #hint{position:absolute;left:0;right:0;bottom:30px;text-align:center;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--soft)}
+  #hint i{display:block;width:1px;height:34px;margin:12px auto 0;background:linear-gradient(var(--soft),transparent)}
+  #prog{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--ink)}
+
+  /* ---------- deck ---------- */
+  .slide{position:relative;min-height:100vh;padding:clamp(72px,11vh,120px) clamp(22px,6vw,96px) clamp(48px,8vh,90px);display:grid;align-content:center;gap:clamp(24px,4vh,48px);border-top:1px solid var(--rule);overflow:hidden}
+  .slide .no{position:absolute;left:clamp(22px,6vw,96px);top:clamp(24px,4vh,40px);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--soft)}
+  .slide .no b{color:var(--ink)}
+  .slide h2{margin:0;font-size:clamp(32px,5.1vw,80px);line-height:1.02;letter-spacing:-.038em;font-weight:700;text-wrap:balance;max-width:17ch}
+  .slide p{margin:0;font-size:clamp(16px,1.55vw,22px);line-height:1.45;color:var(--mid);max-width:44ch;text-wrap:pretty}
+  .slide .note{font-style:italic;font-size:clamp(13px,1.05vw,15px);color:var(--soft);max-width:60ch}
+  .slide .copy{display:grid;gap:clamp(14px,2.2vh,24px);align-content:center}
+  .split{grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:center;column-gap:clamp(28px,5vw,80px)}
+  .split.phone{grid-template-columns:minmax(0,7fr) minmax(0,4fr)}
+  .split figure,.stack figure{margin:0}
+  .split figure img,.stack figure img{width:100%;box-shadow:0 30px 60px -30px rgba(20,22,28,.35)}
+  .split.phone figure img{box-shadow:none;max-height:78vh;width:auto;margin:0 auto;filter:drop-shadow(0 30px 40px rgba(20,22,28,.28))}
+  .split figure img{max-height:74vh;width:auto;max-width:100%;margin:0 auto;height:auto}
+  .split.phone figure img{max-height:78vh}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,1.2vw,18px);align-items:center;margin:0}
+  .pair img,.pair video{width:100%;height:auto;display:block;box-shadow:0 30px 60px -30px rgba(20,22,28,.35)}
+  .pair figcaption{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,1.2vw,18px);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--soft)}
+  .cols{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:clamp(28px,5vw,80px);align-items:end}
+  .slide.tight{gap:clamp(18px,3vh,34px)}.slide.tight .pair img{max-height:40vh;width:auto;max-width:100%;margin:0 auto}
+  .two{display:grid;gap:14px}
+  .lines{list-style:none;margin:0;padding:0;display:grid;gap:0;max-width:44ch}
+  .lines li{padding:13px 0;border-top:1px solid var(--rule);font-size:clamp(16px,1.5vw,21px);color:var(--mid)}
+  .lines li b{color:var(--ink);font-weight:700}
+
+  .bleed{color:#fff;align-content:end;border-top:0}
+  .bleed .bgi{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .bleed::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(12,12,14,.78) 0%,rgba(12,12,14,.42) 42%,rgba(12,12,14,0) 72%),linear-gradient(0deg,rgba(12,12,14,.5),rgba(12,12,14,0) 45%)}
+  .bleed>*:not(.bgi){position:relative;z-index:2}
+  .bleed .no,.bleed .no b{color:#fff}
+  .bleed .no{position:absolute;opacity:.85}
+  .bleed p{color:rgba(255,255,255,.86)}
+  .bleed .note{color:rgba(255,255,255,.7)}
+  .bleed.light{color:var(--ink)}
+  .bleed.light::before{background:linear-gradient(90deg,rgba(240,228,208,.55) 0%,rgba(240,228,208,0) 55%)}
+  .bleed.light .no,.bleed.light .no b{color:var(--ink)}
+  .bleed.light p{color:#3d4046}.bleed.light .note{color:#5b5348}
+
+  /* circles vs straight line */
+  .motif{display:flex;align-items:center;gap:clamp(18px,3vw,44px);color:var(--ink)}
+  .motif svg{height:clamp(44px,7vh,72px);width:auto;overflow:visible}
+  .motif span{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--soft)}
+
+  /* slide 7 formats */
+  .formats{display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(12px,1.6vw,24px);align-items:end}
+  .fmt{margin:0}.fmt .f{background-size:cover;background-position:center;box-shadow:0 24px 44px -26px rgba(20,22,28,.4);position:relative;overflow:hidden}
+  .fmt figcaption{margin-top:10px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--soft)}
+  .fmt .line{position:absolute;left:0;right:0;bottom:0;padding:5% 4%;color:#fff;font-weight:700;letter-spacing:-.02em;font-size:clamp(11px,1.25vw,19px);background:linear-gradient(0deg,rgba(0,0,0,.6),transparent)}
+  .ooh{position:relative;container-type:inline-size;box-shadow:0 24px 44px -26px rgba(20,22,28,.4)}
+  .ooh img{width:100%}
+  .ooh .art{position:absolute;left:26.6%;top:34%;width:46.8%;height:32.6%;display:grid;grid-template-columns:1fr 1fr;align-items:center;color:#191a1c;mix-blend-mode:multiply;opacity:.92}
+  .ooh .art div{display:flex;flex-direction:column;align-items:center;gap:1.1cqw;text-align:center}
+  .ooh .art svg{height:4.6cqw;width:auto;overflow:visible}
+  .ooh .art b{font-size:1.75cqw;letter-spacing:-.03em;white-space:nowrap}
+  .ooh .art small{position:absolute;right:3%;bottom:6%;font-size:.78cqw;letter-spacing:.02em}
+  .f-ooh{grid-column:span 6}.f-ooh .f{aspect-ratio:21/9}
+  .f-soc{grid-column:span 2}.f-soc .f{aspect-ratio:4/5}
+  .f-web{grid-column:span 4}.f-web .f{aspect-ratio:16/9;border-top:16px solid #fff;border-radius:6px 6px 0 0}
+  .f-hoard{grid-column:span 12}.f-hoard .f{aspect-ratio:19/1;background:var(--ink);display:flex;align-items:center;padding:0 3%;gap:3%;color:#fff}
+  .f-hoard svg{height:46%;flex:none}.f-hoard b{font-size:clamp(13px,2.2vw,34px);letter-spacing:-.03em;white-space:nowrap}
+
+  /* slide 12 timeline */
+  .phases{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--ink)}
+  .phase{padding:22px 22px 0 0}.phase+.phase{padding-left:22px;border-left:1px solid var(--rule)}
+  .phase small{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--soft)}
+  .phase h3{margin:8px 0 6px;font-size:clamp(24px,2.8vw,42px);letter-spacing:-.03em}
+  .phase p{font-size:clamp(14px,1.2vw,17px)}
+  .phase svg{height:clamp(46px,8vh,84px);width:100%;margin-top:22px;overflow:visible}
+
+  /* slide 13 zones + map */
+  .zones{display:grid;gap:12px;max-width:520px}
+  .zone{display:grid;grid-template-columns:110px 1fr 52px;align-items:center;gap:14px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mid)}
+  .zone i{display:block;height:10px;background:var(--rule);position:relative}.zone i::after{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--w);background:var(--ink)}
+  .zone b{font-size:22px;letter-spacing:-.02em;color:var(--ink);text-align:right}
+  .mapcard{position:relative;aspect-ratio:4/3;background:url(assets/map/overview.jpg) 30% 27%/230% no-repeat;box-shadow:0 30px 60px -30px rgba(20,22,28,.45);overflow:hidden}
+  .mapcard .pin{position:absolute;left:46%;top:47%;width:34px;height:34px;margin:-34px 0 0 -17px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--ink);border:3px solid #fff}
+  .mapcard .res{position:absolute;left:5%;right:5%;bottom:6%;background:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .mapcard .res b{display:block;font-size:15px;letter-spacing:-.01em}.mapcard .res span{font-size:12px;color:var(--soft)}
+  .mapcard .res em{font-style:normal;background:var(--ink);color:#fff;font-size:12px;padding:9px 14px;white-space:nowrap}
+  .mapcard small{position:absolute;right:6px;top:4px;font-size:8.5px;color:rgba(255,255,255,.7)}
+
+  /* slides 14, 15 */
+  .metrics{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ink)}
+  .metrics div{padding:22px 22px 6px 0;font-size:clamp(24px,3.2vw,50px);font-weight:700;letter-spacing:-.035em;line-height:1.02}
+  .metrics div+div{padding-left:22px;border-left:1px solid var(--rule)}
+  .metrics small{display:block;font-size:11px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--soft);margin-bottom:14px}
+  .services{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ink)}
+  .services div{padding:18px 16px 26px 0;border-bottom:1px solid var(--rule);font-size:clamp(17px,1.9vw,28px);font-weight:700;letter-spacing:-.03em}
+  .services small{display:block;font-size:11px;font-weight:400;letter-spacing:.2em;color:var(--soft);margin-bottom:10px}
+
+  .close{text-align:center;justify-items:center}
+  .close h2{max-width:none;font-size:clamp(36px,7.2vw,116px)}
+  .close .rule{width:min(60vw,720px);height:2px;background:var(--ink)}
+
+  .nw{white-space:nowrap}
+  .duo{margin:0 auto;display:grid;gap:clamp(10px,1.4vh,16px);width:100%;max-width:66vh}
+  .duo img{width:100%;height:auto;box-shadow:0 30px 60px -30px rgba(20,22,28,.35)}
+
+  @media (max-width:820px){
+    #bar{padding:16px;font-size:9.5px}#bar span{display:none}.marksub{letter-spacing:.16em;font-size:8.5px}
+    .split,.split.phone,.cols{grid-template-columns:1fr}
+    .phases,.metrics{grid-template-columns:1fr}.phase+.phase,.metrics div+div{padding-left:0;border-left:0;border-top:1px solid var(--rule)}
+    .services{grid-template-columns:1fr 1fr}
+    .f-ooh,.f-web{grid-column:span 12}.f-soc{grid-column:span 6}
+    .bleed::before{background:linear-gradient(0deg,rgba(12,12,14,.85),rgba(12,12,14,.1) 70%)}
+  }
+
+  /* ---------- navigation ---------- */
+  #bar{padding-right:170px}
+  #nav{position:fixed;top:14px;right:18px;z-index:100;font-size:11px;letter-spacing:.2em;text-transform:uppercase}
+  #navBtn{display:flex;align-items:center;gap:12px;background:rgba(246,247,248,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:0;border-radius:99px;padding:9px 14px 9px 16px;color:var(--ink);font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer}
+  #navBtn:focus-visible,#navList a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  #navCur{color:var(--mid)}
+  .burger{display:grid;gap:4px}.burger i{display:block;width:16px;height:1.5px;background:var(--ink)}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  #navList{position:absolute;right:0;top:calc(100% + 8px);min-width:250px;background:var(--paper);padding:8px 0;box-shadow:0 24px 50px -20px rgba(20,22,28,.35)}
+  #navList a{display:flex;gap:16px;align-items:baseline;padding:11px 20px;color:var(--soft);text-decoration:none}
+  #navList a small{font-size:10px;color:var(--soft)}
+  #navList a:hover{color:var(--ink)}
+  #navList a.on{color:var(--ink);font-weight:700}
+  #navList a.on small{color:var(--ink)}
+
+  /* ---------- chapters + new layouts ---------- */
+  .divider{background:var(--ink);color:#fff;border-top:0;align-content:center;gap:clamp(10px,2vh,20px)}
+  .divider .num{font-size:clamp(90px,15vw,240px);font-weight:700;letter-spacing:-.06em;line-height:.85}
+  .divider h2{max-width:none;font-size:clamp(28px,4.2vw,66px);text-transform:uppercase;letter-spacing:-.01em}
+  .slide p b{color:var(--ink)} .bleed p b{color:#fff}
+  .eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--soft)}
+  .bleed .eyebrow{color:rgba(255,255,255,.75)} .bleed.light .eyebrow{color:#5b5348}
+  .flow{font-size:clamp(22px,2.6vw,40px);white-space:nowrap;font-weight:700;letter-spacing:-.035em;line-height:1.05}
+  .flow i{font-style:normal;color:#12ae4c;padding:0 .15em}
+  .jobs{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--ink)}
+  .jobs div{padding:22px 22px 6px 0;font-size:clamp(24px,3.2vw,50px);font-weight:700;letter-spacing:-.035em;line-height:1.05}
+  .jobs div+div{padding-left:22px;border-left:1px solid var(--rule)}
+  .jobs small,.four small{display:block;font-size:11px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--soft);margin-bottom:14px}
+  .motif.big svg{height:clamp(70px,13vh,130px)}
+  .bn{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--ink)}
+  .bn>div{padding:24px 24px 4px 0}.bn>div+div{padding-left:24px;border-left:1px solid var(--rule)}
+  .bn .ic svg{height:clamp(46px,8vh,80px);width:auto;overflow:visible}
+  .bn h3{margin:16px 0 6px;font-size:clamp(28px,3.6vw,56px);letter-spacing:-.04em;text-transform:uppercase}
+  .lines.wide{max-width:70ch}
+  .stack{align-content:center}.stack figure{margin:0}.stack figure img{max-height:58vh;width:auto;max-width:100%;margin:0 auto;box-shadow:0 30px 60px -30px rgba(20,22,28,.35)}
+  .four{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ink)}
+  .four div{padding:22px 18px 8px 0;font-size:clamp(20px,2.2vw,34px);font-weight:700;letter-spacing:-.03em;line-height:1.08}
+  .four div+div{padding-left:18px;border-left:1px solid var(--rule)}
+  .four span{display:block;margin-top:12px;font-size:clamp(14px,1.2vw,17px);font-weight:400;letter-spacing:0;color:var(--mid)}
+  .phase p{max-width:30ch}
+  .metrics.m4{grid-template-columns:repeat(4,1fr)}
+  .services.s3{grid-template-columns:repeat(3,1fr)}
+  .appx{align-content:start;background:var(--paper)}
+  .appx h2{font-size:clamp(28px,3.4vw,52px)}
+  .tbl{width:100%;border-collapse:collapse;font-size:clamp(12.5px,1vw,15px);color:var(--mid)}
+  .tbl th{text-align:left;font-size:10.5px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);padding:10px 14px 10px 0;border-bottom:1px solid var(--ink)}
+  .tbl td{padding:10px 14px 10px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+  .tbl td:first-child{color:var(--ink);font-weight:700;width:34%}
+  .tbc{display:inline-block;font-size:9.5px;letter-spacing:.14em;background:#f1e2b8;color:#6e4a07;padding:1px 6px;margin-left:4px;vertical-align:middle}
+  @media (max-width:820px){
+    #bar{padding-right:16px}#nav{top:10px;right:10px}#navCur{display:none}
+    .jobs,.bn,.four,.metrics.m4,.services.s3{grid-template-columns:1fr}
+    .jobs div+div,.bn>div+div,.four div+div{padding-left:0;border-left:0;border-top:1px solid var(--rule)}
+    .tbl td:first-child{width:auto}
+  }
+
+  /* map-KV visual language */
+  .kvmap{background:#faf8f4;border-top:0;gap:clamp(10px,2vh,22px)}
+  .kvmap h2{max-width:none;font-size:clamp(24px,2.8vw,42px)}
+  .kvmap figure{margin:0}.kvmap figure img{width:100%;max-height:72vh;object-fit:contain}
+  .kvmap figcaption{display:grid;grid-template-columns:1fr 1fr;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--soft);padding:0 6%}
+  svg.mt{overflow:visible}
+  .motif.big svg.mt{height:clamp(90px,16vh,160px)}
+  .bn .ic svg.mt{height:clamp(60px,10vh,96px)}
+  .phase svg.mt{height:clamp(56px,9vh,90px);width:auto}
+  .loop3{display:flex;gap:6px;margin-top:22px}.loop3 svg.mt{height:clamp(34px,5.5vh,54px);margin:0}
+  .ooh .kvart{position:absolute;left:26.6%;top:34%;width:46.8%;height:32.6%;object-fit:contain;background:#faf8f4}
+  .f-hoard .f{background:#faf8f4;color:var(--ink)}
+  .f-hoard svg.mt{height:70%}
+
+  /* link to the Inhaus online deck */
+  .work{display:flex;align-items:center;justify-content:space-between;gap:clamp(18px,3vw,40px);background:var(--ink);color:#fff;text-decoration:none;padding:clamp(18px,2.6vw,30px) clamp(20px,3vw,36px);transition:transform .2s ease}
+  .work:hover{transform:translateY(-2px)}
+  .work:focus-visible{outline:3px solid #12ae4c;outline-offset:3px}
+  .work .wt{display:grid;gap:8px;min-width:0}
+  .work small{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+  .work b{font-size:clamp(26px,3.4vw,52px);letter-spacing:-.035em;line-height:1}
+  .work b i{font-style:normal;color:#12ae4c}
+  .work span{font-size:clamp(14px,1.2vw,17px);color:rgba(255,255,255,.78)}
+  .work .qr{width:clamp(78px,8vw,112px);height:auto;background:#fff;padding:8px;flex:none}
+  .tbl a{color:var(--ink)}
+  @media (max-width:820px){.work .qr{display:none}}
+
+  /* ---------- rollout road (scroll-driven) ---------- */
+  .slide.roadwrap{display:block;align-content:normal;height:620vh;min-height:0;padding:0;overflow:visible}
+  .roadstage{position:sticky;top:0;height:100vh;overflow:hidden;padding:clamp(72px,11vh,110px) clamp(22px,6vw,96px) 0;display:grid;grid-template-rows:auto 1fr auto;transition:background-color .8s ease;background:var(--bg)}
+  .roadstage[data-phase="launch"]{background:#faf8f4}
+  .roadstage[data-phase="always"]{background:#f1f2f0}
+  .rhead h2{font-size:clamp(26px,3vw,46px);max-width:none}
+  .rhead p{font-size:clamp(14px,1.2vw,17px);margin-top:6px}
+  .focus{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,auto);gap:clamp(20px,4vw,64px);align-items:center;align-self:center;max-width:1180px}
+  .ftxt{display:grid;gap:12px;align-content:center;min-width:0}
+  .ftxt small{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--soft)}
+  .ftxt h3{margin:0;font-size:clamp(34px,4.6vw,72px);letter-spacing:-.04em;line-height:1;transition:font-size .35s ease}
+  .focus.big .ftxt h3{font-size:clamp(46px,6.8vw,108px)}
+  .ftxt p{font-size:clamp(15px,1.35vw,20px);max-width:46ch}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips span{font-size:12px;letter-spacing:.04em;border:1px solid var(--ink);padding:6px 11px;border-radius:99px}
+  .chips span.opt{border-style:dashed;color:var(--mid)}
+  .fimg{width:clamp(220px,30vw,460px);aspect-ratio:16/10;position:relative}
+  .fimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;box-shadow:0 30px 60px -30px rgba(20,22,28,.4)}
+  .fimg img.ph{object-fit:contain;box-shadow:none;filter:drop-shadow(0 24px 30px rgba(20,22,28,.25))}
+  .focus.big .fimg{width:clamp(260px,38vw,600px)}
+  .focus.swap .ftxt,.focus.swap .fimg{animation:fswap .45s ease}
+  @keyframes fswap{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .road{position:relative;height:clamp(230px,34vh,320px);margin:0 clamp(10px,2vw,30px)}
+  .track,.trackon{position:absolute;left:0;top:46%;height:2px;background:#cfd2d6}
+  .track{right:0}
+  .trackon{width:var(--px,0);background:#12ae4c;height:4px;margin-top:-1px;border-radius:2px}
+  .roadstage[data-phase="launch"] .trackon,.roadstage[data-phase="always"] .trackon{height:6px;margin-top:-2px}
+  .phases2 span{position:absolute;top:2%;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--soft);padding-left:10px;border-left:1px solid #cfd2d6;height:20%;transition:color .4s}
+  .phases2 span.on{color:var(--ink);font-weight:700;border-left-color:var(--ink)}
+  .mk{position:absolute;top:46%;width:0;height:0}
+  .mk i{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:var(--paper);border:2px solid #c3c6ca;transition:all .3s}
+  .mk b{position:absolute;left:0;transform:translateX(-50%);width:max-content;max-width:110px;text-align:center;font-size:11.5px;font-weight:400;line-height:1.2;color:var(--mid);opacity:0;transition:opacity .35s,color .35s}
+  .mk.up b{bottom:16px}.mk.dn b{top:16px}
+  .mk.big i{left:-7px;top:-7px;width:14px;height:14px}
+  .mk.past i{background:#12ae4c;border-color:#12ae4c}
+  .mk.past b{opacity:.55}
+  .mk.cur i{background:#12ae4c;border-color:#12ae4c;box-shadow:0 0 0 6px rgba(18,174,76,.18)}
+  .mk.cur b{opacity:1;color:var(--ink);font-weight:700}
+  .car{position:absolute;top:46%;left:var(--px,0);width:clamp(64px,5.4vw,88px);transform:translate(-50%,-50%);filter:drop-shadow(0 6px 8px rgba(20,22,28,.25));z-index:3;transition:width .4s}
+  .car svg{display:block;width:100%;height:auto}
+  .band{position:absolute;left:0;right:0;top:66%;height:24%}
+  .band svg{position:absolute;inset:0;width:100%;height:100%}
+  .bbase path{fill:#d6d9dc;opacity:.55}
+  .bon{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--px,0px)) 0 0)}
+  .bon path{fill:#12ae4c;opacity:.28}
+  .bandlbl{position:absolute;left:0;top:-18px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--soft)}
+  .bnotes span{position:absolute;bottom:-20px;transform:translateX(-50%);font-size:10.5px;letter-spacing:.06em;color:var(--soft);white-space:nowrap}
+  @media (max-width:820px){
+    .slide.roadwrap{height:520vh}
+    .focus{grid-template-columns:1fr}.fimg{width:min(100%,360px)}
+    .mk b,.bnotes{display:none}.phases2 span{font-size:9.5px;letter-spacing:.14em}
+  }
+</style>
+</head>
+<body>
+<nav id="nav" aria-label="Sections"><button id="navBtn" type="button" aria-expanded="false" aria-controls="navList"><span id="navCur">Intro</span><span class="burger" aria-hidden="true"><i></i><i></i></span><span class="sr">Menu</span></button><div id="navList" hidden>
+<a href="#intro" data-t="intro"><small>00</small>Intro</a>
+<a href="#s01" data-t="s01"><small>01</small>Challenge</a>
+<a href="#s02" data-t="s02"><small>02</small>Strategic Idea</a>
+<a href="#s03" data-t="s03"><small>03</small>Campaign</a>
+<a href="#s04" data-t="s04"><small>04</small>Social &amp; Culture</a>
+<a href="#s05" data-t="s05"><small>05</small>Making It Work</a>
+<a href="#s06" data-t="s06"><small>06</small>Appendix</a>
+</div></nav>
+
+<section id="intro">
+  <div id="stage">
+    <canvas id="c"></canvas>
+    <div id="bar"><b>Inhaus × Wahat Al Bastakia</b><span>Automated Car Parking · Campaign proposal</span></div>
+    <div class="word" id="before">BEFORE</div>
+    <div class="word" id="now">NOW</div>
+    <!-- LOGO: drop the official file at assets/wab-logo.svg; the typeset fallback shows until then -->
+    <div id="logo">
+      <img src="assets/wab-logo.svg" alt="Wahat Al Bastakia" onerror="this.remove();document.getElementById('logoFallback').hidden=false">
+      <div id="logoFallback" hidden><div class="mark">WAB</div><div class="marksub">Wahat Al Bastakia · Automated Car Parking</div></div>
+    </div>
+    <div id="tag">AS SIMPLE AS THAT.</div>
+    <div id="hint">Scroll<i></i></div>
+    <div id="prog"></div>
+  </div>
+</section>
+
+<main id="deck">
+<section class="slide divider" id="s01" data-sec="01"><div class="num">01</div><h2>The Challenge</h2></section>
+<section class="slide bleed"><img class="bgi" src="assets/img/golden-traffic.jpg" alt="" loading="lazy"><div class="no"><b>01</b> The Challenge</div><div class="copy"><h2>Everyone in Bur Dubai has a parking system.</h2><p>The loop. The “two minutes.” Someone waiting in the car. Asking the shopkeeper for a favour.</p><p><b>These aren't parking solutions. They're workarounds.</b></p></div></section>
+<section class="slide bleed"><img class="bgi" src="assets/img/circling-v2.jpg" alt="" loading="lazy"><div class="no"><b>01</b> The Challenge</div><div class="copy"><h2>The challenge isn't awareness. It's behaviour.</h2><p>People already know parking here is difficult. The job is to make WAB feel easier than the habits they already use.</p><p class="note">We're not introducing a need. We're introducing a new behaviour.</p></div></section>
+<section class="slide split"><div class="no"><b>01</b> The Challenge</div><div class="copy"><h2>Technology is how it works. Simplicity is why people will use it.</h2><p>Automated parking is the proof. The benefit is much simpler:</p><div class="flow">Arrive <i>→</i> Park <i>→</i> Move on.</div><p>We're not selling robotics. We're selling the feeling of <b>done</b>.</p></div><figure class="two"><img src="assets/img/wab-entrance.jpg" alt="" loading="lazy"></figure></section>
+<section class="slide"><div class="no"><b>01</b> The Challenge</div><div class="copy"><h2>The car park can unlock the neighbourhood around it.</h2><p>More parked cars means more people on foot, more time in the souq, more shopping and dining, and more footfall for the retail podium.</p></div><div class="jobs"><div><small>So the campaign has two jobs · 01</small>Change parking behaviour.</div><div><small>02</small>Bring the retail destination to life.</div></div></section>
+
+<section class="slide divider" id="s02" data-sec="02"><div class="num">02</div><h2>The Strategic Idea</h2></section>
+<section class="slide"><div class="no"><b>02</b> The Strategic Idea</div><div class="copy"><h2>Make the old behaviour visible. Make the new behaviour obvious.</h2><p>The campaign contrasts what parking feels like today with what it can feel like with WAB. The old way looks messy. The new way looks direct.</p></div><div class="motif big"><svg class="mt" viewBox="0 0 120 80" fill="none" aria-hidden="true"><path d="M1 44 C12 44 22 47 32 50 C58 58 92 44 88 26 C84 10 56 8 42 20 C28 32 30 62 56 68 C84 74 108 56 100 36 C92 16 64 18 60 36 C57 52 72 62 86 54 C98 47 96 30 84 26" stroke="#e5231b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><g transform="translate(12 44) rotate(0)"><rect x="-5.5" y="-3" width="11" height="6" rx="2.6" fill="#fff" stroke="#1a1a1a" stroke-width=".7"/><rect x="-1.6" y="-2.1" width="3.8" height="4.2" rx="1" fill="#1a1a1a"/></g><g transform="translate(88 26) rotate(-80)"><rect x="-5.5" y="-3" width="11" height="6" rx="2.6" fill="#fff" stroke="#1a1a1a" stroke-width=".7"/><rect x="-1.6" y="-2.1" width="3.8" height="4.2" rx="1" fill="#1a1a1a"/></g><g transform="translate(56 68) rotate(10)"><rect x="-5.5" y="-3" width="11" height="6" rx="2.6" fill="#fff" stroke="#1a1a1a" stroke-width=".7"/><rect x="-1.6" y="-2.1" width="3.8" height="4.2" rx="1" fill="#1a1a1a"/></g><g transform="translate(100 36) rotate(-100)"><rect x="-5.5" y="-3" width="11" height="6" rx="2.6" fill="#fff" stroke="#1a1a1a" stroke-width=".7"/><rect x="-1.6" y="-2.1" width="3.8" height="4.2" rx="1" fill="#1a1a1a"/></g></svg><span>Today</span><svg class="mt" viewBox="0 0 160 80" fill="none" aria-hidden="true"><path d="M14 46 H128 Q134 46 134 40 V36" stroke="#12ae4c" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="122" y="16" width="26" height="22" rx="1.5" fill="#222"/><rect x="130" y="27" width="8" height="11" fill="#ffe3a8"/><g transform="translate(9 46) rotate(0)"><rect x="-5.5" y="-3" width="11" height="6" rx="2.6" fill="#fff" stroke="#1a1a1a" stroke-width=".7"/><rect x="-1.6" y="-2.1" width="3.8" height="4.2" rx="1" fill="#1a1a1a"/></g></svg><span>With WAB</span></div></section>
+<section class="slide"><div class="no"><b>02</b> The Strategic Idea</div><div class="copy"><h2>BEFORE / NOW</h2><p>One visual system, built on contrast.</p></div><div class="bn"><div><div class="ic"><svg class="mt" viewBox="0 0 120 80" fill="none" aria-hidden="true"><path d="M1 44 C12 44 22 47 32 50 C58 58 92 44 88 26 C84 10 56 8 42 20 C28 32 30 62 56 68 C84 74 108 56 100 36 C92 16 64 18 60 36 C57 52 72 62 86 54 C98 47 96 30 84 26" stroke="#e5231b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><g transform="translate(12 44) rotate(0)"><rect x="-5.5" y="-3" width="11" height="6" rx="2.6" fill="#fff" stroke="#1a1a1a" stroke-width=".7"/><rect x="-1.6" y="-2.1" width="3.8" height="4.2" rx="1" fill="#1a1a1a"/></g><g transform="translate(88 26) rotate(-80)"><rect x="-5.5" y="-3" width="11" height="6" rx="2.6" fill="#fff" stroke="#1a1a1a" stroke-width=".7"/><rect x="-1.6" y="-2.1" width="3.8" height="4.2" rx="1" fill="#1a1a1a"/></g><g transform="translate(56 68) rotate(10)"><rect x="-5.5" y="-3" width="11" height="6" rx="2.6" fill="#fff" stroke="#1a1a1a" stroke-width=".7"/><rect x="-1.6" y="-2.1" width="3.8" height="4.2" rx="1" fill="#1a1a1a"/></g><g transform="translate(100 36) rotate(-100)"><rect x="-5.5" y="-3" width="11" height="6" rx="2.6" fill="#fff" stroke="#1a1a1a" stroke-width=".7"/><rect x="-1.6" y="-2.1" width="3.8" height="4.2" rx="1" fill="#1a1a1a"/></g></svg></div><h3>Before</h3><p>Searching. Waiting. Circling. Stress.</p></div><div><div class="ic"><svg class="mt" viewBox="0 0 160 80" fill="none" aria-hidden="true"><path d="M14 46 H128 Q134 46 134 40 V36" stroke="#12ae4c" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="122" y="16" width="26" height="22" rx="1.5" fill="#222"/><rect x="130" y="27" width="8" height="11" fill="#ffe3a8"/><g transform="translate(9 46) rotate(0)"><rect x="-5.5" y="-3" width="11" height="6" rx="2.6" fill="#fff" stroke="#1a1a1a" stroke-width=".7"/><rect x="-1.6" y="-2.1" width="3.8" height="4.2" rx="1" fill="#1a1a1a"/></g></svg></div><h3>Now</h3><p>Arrive. Park. Move on.</p></div></div><ul class="lines wide"><li><b>The graphic device:</b> a messy red route vs one clean green route.</li><li><b>The human version:</b> a person still parking vs a person already living their day.</li><li><b>Everything signs off:</b> As Simple as That.</li></ul></section>
+
+<section class="slide divider" id="s03" data-sec="03"><div class="num">03</div><h2>The Campaign</h2></section>
+<section class="slide kvmap"><div class="no"><b>03</b> The Campaign</div><div class="copy"><h2>Before, you went in circles. Now, you go straight in.</h2></div><figure><img src="assets/img/kv-map.jpg" alt="Before: a car circling the streets in a red tangle. Now: one green straight line into Wahat Al Bastakia. Parking now can be. As Simple as That."><figcaption><span>Before</span><span>Now</span></figcaption></figure></section>
+<section class="slide split"><div class="no"><b>03</b> The Campaign</div><div class="copy"><h2>He's still parking. He's already shopping.</h2><p>Parking now can be. <span class="nw">As Simple as That.</span></p></div><figure class="two"><img src="assets/img/static-shopping.jpg" alt="" loading="lazy"></figure></section>
+<section class="slide stack"><div class="no"><b>03</b> The Campaign</div><div class="copy"><h2>One of them is still parking.</h2><p>The hero film shows BEFORE and NOW at the same time. One side stays stuck. The other moves on.</p></div><figure><img src="assets/img/storyboard.jpg" alt="" loading="lazy"></figure><p class="note">End super: “This film has been shortened for viewing purposes. The driver on the left continued looking for parking for another 45 minutes.”</p></section>
+<section class="slide split"><div class="no"><b>03</b> The Campaign</div><div class="copy"><h2>Meanwhile…</h2><ul class="lines"><li>He's still parking. <b>He's already having lunch.</b></li><li>She's still parking. <b>She's already shopping.</b></li><li>He's still parking. <b>He's already with his family.</b></li><li>He's still parking. <b>He's already in his meeting.</b></li><li>She's still parking. <b>She's already finished her errands.</b></li></ul><p class="note">A platform with longevity: in every episode, the WAB driver has already moved on.</p></div><figure class="duo"><img src="assets/img/series-a.jpg" alt="" loading="lazy"><img src="assets/img/series-b.jpg" alt="" loading="lazy"></figure></section>
+<section class="slide"><div class="no"><b>03</b> The Campaign</div><div class="copy"><h2>One idea. Everywhere.</h2><p>Outdoor, the building hoarding, social, digital, Google Maps and the website.</p></div><div class="formats">
+  <figure class="fmt f-ooh"><div class="ooh"><img src="assets/img/ooh-billboard.jpg" alt="" loading="lazy"><img class="kvart" src="assets/img/kv-map.jpg" alt=""></div><figcaption>Outdoor</figcaption></figure>
+  <figure class="fmt f-soc"><div class="f" style="background-image:url(assets/img/merchant-b.jpg);background-position:38% center"></div><figcaption>Social</figcaption></figure>
+  <figure class="fmt f-web"><div class="f" style="background-image:url(assets/img/wab-entrance.jpg);background-position:center"></div><figcaption>Website</figcaption></figure>
+  <figure class="fmt f-hoard"><div class="f"><svg class="mt" viewBox="0 0 120 80" fill="none" aria-hidden="true"><path d="M1 44 C12 44 22 47 32 50 C58 58 92 44 88 26 C84 10 56 8 42 20 C28 32 30 62 56 68 C84 74 108 56 100 36 C92 16 64 18 60 36 C57 52 72 62 86 54 C98 47 96 30 84 26" stroke="#e5231b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><g transform="translate(12 44) rotate(0)"><rect x="-5.5" y="-3" width="11" height="6" rx="2.6" fill="#fff" stroke="#1a1a1a" stroke-width=".7"/><rect x="-1.6" y="-2.1" width="3.8" height="4.2" rx="1" fill="#1a1a1a"/></g><g transform="translate(88 26) rotate(-80)"><rect x="-5.5" y="-3" width="11" height="6" rx="2.6" fill="#fff" stroke="#1a1a1a" stroke-width=".7"/><rect x="-1.6" y="-2.1" width="3.8" height="4.2" rx="1" fill="#1a1a1a"/></g><g transform="translate(56 68) rotate(10)"><rect x="-5.5" y="-3" width="11" height="6" rx="2.6" fill="#fff" stroke="#1a1a1a" stroke-width=".7"/><rect x="-1.6" y="-2.1" width="3.8" height="4.2" rx="1" fill="#1a1a1a"/></g><g transform="translate(100 36) rotate(-100)"><rect x="-5.5" y="-3" width="11" height="6" rx="2.6" fill="#fff" stroke="#1a1a1a" stroke-width=".7"/><rect x="-1.6" y="-2.1" width="3.8" height="4.2" rx="1" fill="#1a1a1a"/></g></svg><b>Before, you went in circles.</b><svg class="mt" viewBox="0 0 160 80" fill="none" aria-hidden="true"><path d="M14 46 H128 Q134 46 134 40 V36" stroke="#12ae4c" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="122" y="16" width="26" height="22" rx="1.5" fill="#222"/><rect x="130" y="27" width="8" height="11" fill="#ffe3a8"/><g transform="translate(9 46) rotate(0)"><rect x="-5.5" y="-3" width="11" height="6" rx="2.6" fill="#fff" stroke="#1a1a1a" stroke-width=".7"/><rect x="-1.6" y="-2.1" width="3.8" height="4.2" rx="1" fill="#1a1a1a"/></g></svg><b>Now, you go straight in.</b></div><figcaption>Building hoarding</figcaption></figure>
+</div></section>
+
+<section class="slide divider" id="s04" data-sec="04"><div class="num">04</div><h2>Social &amp; Culture</h2></section>
+<section class="slide"><div class="no"><b>04</b> Social &amp; Culture</div><div class="copy"><h2>The campaign becomes an always-on content ecosystem.</h2><p>Four behaviours, each with one job.</p></div><div class="four"><div><small>01</small>Street conversations<span>Entertain</span></div><div><small>02</small>POV / dashcam<span>Build trust</span></div><div><small>03</small>Neighbourhood documentary<span>Cultural relevance</span></div><div><small>04</small>The time you get back<span>Retail footfall</span></div></div></section>
+<section class="slide split phone"><div class="no"><b>04</b> Social &amp; Culture</div><div class="copy"><div class="eyebrow">01 · Street conversations · Turn parking frustration into entertainment</div><h2>What would you do with 30 free minutes?</h2><p>Real people, cheeky questions, on the street.</p><ul class="lines"><li>How long have you spent looking for parking here?</li><li>What's the fastest way to park in Bur Dubai?</li><li>Local trivia: the right answer wins free robot parking.</li></ul><p class="note">It gives the brand a personality, and tells us what people really think.</p></div><figure class="two"><img src="assets/img/phone-interview.png" alt="" loading="lazy"></figure></section>
+<section class="slide split phone"><div class="no"><b>04</b> Social &amp; Culture</div><div class="copy"><div class="eyebrow">02 · POV / dashcam · Build trust</div><h2>What happens after you leave your car.</h2><p>The complete journey: approach, entry, handover, robot parking, retrieval.</p><p>The machine is the proof, not the idea. The footage answers the questions people actually have about automated parking.</p></div><figure class="two"><img src="assets/img/phone-dashcam.png" alt="" loading="lazy"></figure></section>
+<section class="slide bleed"><img class="bgi" src="assets/img/merchant.jpg" alt="" loading="lazy"><div class="no"><b>04</b> Social &amp; Culture</div><div class="copy"><div class="eyebrow">03 · Neighbourhood documentary · Emotional and cultural relevance</div><h2>One of Dubai's oldest neighbourhoods now has a very new way to park.</h2><p>Shopkeepers, traders, restaurant owners, families and long-time residents. The neighbourhood comes first; WAB is the new arrival in an old place.</p><p class="note">It also produces the documentary film required in the RFP.</p></div></section>
+<section class="slide bleed light"><img class="bgi" src="assets/img/souq-stroll.jpg" alt="" loading="lazy"><div class="no"><b>04</b> Social &amp; Culture</div><div class="copy"><div class="eyebrow">04 · The time you get back · Turn parking into retail footfall</div><h2>The time you spent circling now belongs to the souq.</h2><p>You park. You shop. You eat. You leave. <span class="nw">As Simple as That.</span></p><p>Once parking is easy, the time people used to lose becomes time spent in WAB's retail area and the souq around it.</p><p class="note">Shopping can be. Lunch can be. A quick errand can be. As Simple as That.</p></div></section>
+
+<section class="slide divider" id="s05" data-sec="05"><div class="num">05</div><h2>Making It Work</h2></section>
+<section class="slide roadwrap" id="rollout" aria-label="Campaign rollout: Tease, Launch, Always on">
+<div class="roadstage" data-phase="tease">
+  <div class="no"><b>05</b> Making It Work</div>
+  <div class="rhead"><h2>Tease. Launch. Always on.</h2><p>Three months, one straight line.</p></div>
+  <div class="focus" aria-live="polite"><div class="ftxt"><small id="fEye"></small><h3 id="fTitle"></h3><p id="fDesc"></p><div class="chips" id="fChips"></div></div><div class="fimg" id="fImg"></div></div>
+  <div class="road" id="road">
+    <div class="phases2"><span data-ph="tease" style="left:0%">Tease</span><span data-ph="launch" style="left:31.5%">Launch</span><span data-ph="always" style="left:64.5%">Always on</span></div>
+    <div class="track"></div><div class="trackon"></div>
+    <div id="marks"></div>
+    <div class="car" id="car" aria-hidden="true"><svg viewBox="0 0 72 34"><rect x="2" y="3" width="68" height="28" rx="11" fill="#fff" stroke="#cfd2d6"/><rect x="47" y="1" width="4" height="4" rx="1.5" fill="#fff" stroke="#cfd2d6"/><rect x="47" y="29" width="4" height="4" rx="1.5" fill="#fff" stroke="#cfd2d6"/><path d="M42 7.5 L52 9 Q55.5 17 52 25 L42 26.5 Q44 17 42 7.5 Z" fill="#1b1c1e"/><path d="M13 9.5 L19 8.5 Q17.5 17 19 25.5 L13 24.5 Q11.5 17 13 9.5 Z" fill="#1b1c1e"/><rect x="21" y="9" width="19" height="16" rx="4" fill="#eef0f2"/><rect x="64" y="7" width="4" height="5" rx="1.5" fill="#fff4d6"/><rect x="64" y="22" width="4" height="5" rx="1.5" fill="#fff4d6"/></svg></div>
+    <div class="band"><div class="bandlbl">Paid media pressure</div><svg class="bbase" viewBox="0 0 1000 60" preserveAspectRatio="none"><path id="bandPath" d=""/></svg><div class="bon"><svg viewBox="0 0 1000 60" preserveAspectRatio="none"><path id="bandPath2" d=""/></svg></div>
+      <div class="bnotes"><span style="left:14%">Teaser pulse</span><span style="left:47%">Launch peak</span><span style="left:81%">Always-on optimisation</span></div></div>
+  </div>
+</div>
+</section>
+<section class="slide split"><div class="no"><b>05</b> Making It Work</div><div class="copy"><h2>Be there when the problem is happening.</h2><p>The most important moment to win someone over is while they're already looking for parking.</p><ul class="lines"><li><b>Hyperlocal:</b> Google Maps, Search and Business Profile.</li><li><b>City:</b> social and video for awareness.</li><li><b>Visitors:</b> tourism and destination content.</li></ul><p class="note">Budget split and forecasts are in the appendix.</p></div><figure><div class="mapcard"><span class="pin"></span><small>Imagery © Esri, Maxar</small>
+  <div class="res"><div><b>Wahat Al Bastakia Automated Car Parking</b><span>Parking · Al Souq Al Kabeer, Bur Dubai</span></div><em>Directions</em></div></div></figure></section>
+<section class="slide"><div class="no"><b>05</b> Making It Work</div><div class="copy"><h2>We count cars, not likes.</h2><p>The campaign is measured against behaviour. Social metrics are supporting signals, not the objective.</p></div><div class="metrics m4"><div><small>01</small>Cars parked</div><div><small>02</small>Direction requests</div><div><small>03</small>Repeat visits</div><div><small>04</small>Retail &amp; leasing enquiries</div></div><p class="note">Every number can be checked in WAB's own accounts. Retail and leasing enquiries are counted where they can be tracked.</p></section>
+<section class="slide"><div class="no"><b>05</b> Making It Work</div><div class="copy"><h2>One idea. One team.</h2><p>Inhaus owns the ecosystem end to end, with a bilingual team that writes, shoots and runs everything in-house.</p></div><div class="services s3"><div><small>01</small>Strategy</div><div><small>02</small>Creative</div><div><small>03</small>Production</div><div><small>04</small>Social</div><div><small>05</small>Paid media</div><div><small>06</small>Website</div><div><small>07</small>Creators</div><div><small>08</small>PR coordination</div><div><small>09</small>Reporting</div></div><a class="work" href="https://deck.inhaus.ae/" target="_blank" rel="noopener"><div class="wt"><small>See our work</small><b>deck.inhaus.ae <i>↗</i></b><span>Our campaigns, social work, production and success cases, all in one place.</span></div><img class="qr" src="assets/img/qr-inhaus-deck.svg" alt="QR code for deck.inhaus.ae"></a></section>
+<section class="slide close"><div class="mark">WAB</div><div class="rule"></div><h2>Parking now can be. <span class="nw">As Simple as That.</span></h2><p>Wahat Al Bastakia Automated Car Parking.</p></section>
+
+<section class="slide divider" id="s06" data-sec="06"><div class="num">06</div><h2>Appendix</h2></section>
+<section class="slide appx"><div class="no"><b>06</b> Appendix · A</div><div class="copy"><h2>RFP compliance</h2></div><table class="tbl"><thead><tr><th>RFP requirement</th><th>Where we answer it</th></tr></thead><tbody>
+<tr><td>3.1 Strategy and messaging per audience</td><td>01 Challenge · 02 Strategic Idea · Appendix C</td></tr>
+<tr><td>3.1 Creative concept: idea, key visual, tagline, look &amp; feel</td><td>Intro · 02 Strategic Idea · 03 Campaign</td></tr>
+<tr><td>3.1 Phased roadmap with dates</td><td>05 Making It Work (dates lock to opening day <span class="tbc">TBC</span>)</td></tr>
+<tr><td>3.1 Zone plan and budget split</td><td>05 Making It Work · Appendix C</td></tr>
+<tr><td>3.1 Monthly content strategy and calendar</td><td>04 Social &amp; Culture · Appendix B</td></tr>
+<tr><td>3.1 Retail podium stream</td><td>01 Challenge (two jobs) · 04 The time you get back</td></tr>
+<tr><td>3.2 Arabic and English, WAB brand identity</td><td>All content produced in AR/EN · Appendix C</td></tr>
+<tr><td>3.3 Shoots, stills, 12 short videos, 3D explainer, How-to</td><td>03 Campaign · 04 POV / dashcam · Appendix B</td></tr>
+<tr><td>Full documentary-style project video</td><td>04 Neighbourhood documentary</td></tr>
+<tr><td>3.4 Social management, 5 platforms, 24h replies, FAQ bank</td><td>04 Social &amp; Culture · Appendix B</td></tr>
+<tr><td>3.5 Website, SEO, GA4/GTM, pixels, domain in WAB's name</td><td>Appendix E</td></tr>
+<tr><td>3.6 Paid media, Business Profile, retargeting, forecasts and benchmarks</td><td>05 Be there when the problem is happening · Appendix C</td></tr>
+<tr><td>3.7 Creators, permits, press, tourism listings, government protocol, activation</td><td>Appendix D</td></tr>
+<tr><td>3.8 Reporting, weekly calls, named team, revisions, approvals</td><td>05 We count cars · Appendix D, E</td></tr>
+<tr><td>§8 WAB-owned accounts, UTMs, fraud indicators, KPI targets</td><td>05 We count cars · Appendix D</td></tr>
+<tr><td>§11 Company profile, references, showreel with 3D, team, creator shortlist</td><td>05 One idea. One team. · Appendix D, E</td></tr>
+<tr><td>§10 Commercial pricing schedule</td><td>Separate commercial proposal</td></tr>
+</tbody></table></section>
+<section class="slide appx"><div class="no"><b>06</b> Appendix · B</div><div class="copy"><h2>Deliverables and monthly volumes</h2></div><table class="tbl"><thead><tr><th>Ref</th><th>Deliverable</th><th>M1</th><th>M2</th><th>M3</th></tr></thead><tbody>
+<tr><td>D1–D2</td><td>Strategy, concept, roadmap, zones</td><td>1</td><td>–</td><td>–</td></tr>
+<tr><td>D3</td><td>Content calendar</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>D4–D5</td><td>Shoot day · edited stills (25 per shoot <span class="tbc">TBC</span>)</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>D6</td><td>Short-form videos (AR/EN subtitles)</td><td>4</td><td>4</td><td>4</td></tr>
+<tr><td>D7–D8</td><td>3D explainer · How-to video</td><td>1 + 1</td><td>–</td><td>–</td></tr>
+<tr><td>D9–D10</td><td>Posts · stories</td><td>14 · 12</td><td>14 · 12</td><td>14 · 12</td></tr>
+<tr><td>D11</td><td>LinkedIn posts</td><td>4</td><td>4</td><td>4</td></tr>
+<tr><td>D12</td><td>Platforms managed</td><td>5</td><td>5</td><td>5</td></tr>
+<tr><td>D13–D14</td><td>Website · tracking · Business Profile</td><td>1</td><td>–</td><td>–</td></tr>
+<tr><td>D15–D16</td><td>Paid media · YouTube and retargeting</td><td>1</td><td>2</td><td>2</td></tr>
+<tr><td>D17</td><td>Creators</td><td>–</td><td>2</td><td>2</td></tr>
+<tr><td>D18–D19</td><td>Press release · launch activation (optional)</td><td>–</td><td>1</td><td>–</td></tr>
+<tr><td>D20–D22</td><td>Reports · weekly calls · KPIs</td><td>1 · 4 · 1</td><td>1 · 4</td><td>1 · 4</td></tr>
+<tr><td>—</td><td>Documentary film</td><td></td><td></td><td>1</td></tr>
+</tbody></table><p class="note">Monthly content draws on the campaign series and the four social behaviours. Replies within 24 hours, with an FAQ bank supported by dashcam clips.</p></section>
+<section class="slide appx"><div class="no"><b>06</b> Appendix · C</div><div class="copy"><h2>Platforms, messaging and media</h2></div><table class="tbl"><thead><tr><th>Platform</th><th>Role</th><th>Content</th></tr></thead><tbody>
+<tr><td>Google Maps, Search, Business Profile</td><td>Where people decide</td><td>Ads, listing, How-to</td></tr>
+<tr><td>Instagram</td><td>The campaign feed</td><td>Split-screen statics, series, documentary, the time you get back</td></tr>
+<tr><td>TikTok</td><td>Street level</td><td>Street conversations, dashcam</td></tr>
+<tr><td>YouTube</td><td>The longer story</td><td>Hero film, explainer, documentary, Shorts</td></tr>
+<tr><td>Facebook</td><td>Residents and traders</td><td>Documentary, community updates</td></tr>
+<tr><td>LinkedIn</td><td>Leasing</td><td>Retail podium leasing, tenants, milestones</td></tr>
+</tbody></table><table class="tbl"><thead><tr><th>Audience</th><th>Line (Arabic and English <span class="tbc">TBC</span>)</th></tr></thead><tbody>
+<tr><td>Daily drivers, traders</td><td>Parking now can be. As Simple as That.</td></tr>
+<tr><td>Shoppers, families, visitors</td><td>Shopping can be. As Simple as That.</td></tr>
+<tr><td>Tenants</td><td>Your customers arrive already parked.</td></tr>
+<tr><td>Leasing prospects</td><td>A retail unit with the parking already solved.</td></tr>
+</tbody></table><table class="tbl"><thead><tr><th>Zone</th><th>Channels</th><th>Proposed split</th></tr></thead><tbody>
+<tr><td>Hyperlocal</td><td>Google Maps, Search, Business Profile, on-site</td><td>45%</td></tr>
+<tr><td>City</td><td>Social and video; LinkedIn for leasing</td><td>40%</td></tr>
+<tr><td>Visitors</td><td>Video, social, tourism partners</td><td>15%</td></tr>
+</tbody></table><p class="note">Retargeting from Month 2. Forecast reach, impressions, clicks, CPM and CPC per platform with benchmark sources <span class="tbc">TBC</span>.</p></section>
+<section class="slide appx"><div class="no"><b>06</b> Appendix · D</div><div class="copy"><h2>KPIs, creators, PR and governance</h2></div><table class="tbl"><tbody>
+<tr><td>KPIs · Month 1</td><td>Website, tracking and Business Profile live; explainer and teaser views; Maps views</td></tr>
+<tr><td>KPIs · Month 2</td><td>Direction requests, “Get directions” clicks, cars parked</td></tr>
+<tr><td>KPIs · Month 3</td><td>Growth in cars parked, repeat visits, retail and leasing enquiries. Numeric targets <span class="tbc">TBC</span></td></tr>
+<tr><td>Governance</td><td>WAB-owned accounts with Inhaus as manager; UTMs on every ad; no paid followers; follower growth always reported next to engagement</td></tr>
+<tr><td>Creators</td><td>Four creators (food, car/tech, heritage, family), all with UAE advertiser permits and disclosure. Shortlist <span class="tbc">TBC</span></td></tr>
+<tr><td>PR</td><td>Launch press release, media list and tourism listings; optional launch-day activation</td></tr>
+<tr><td>Government protocol</td><td>No RTA, Dubai Municipality or Dubai Culture name, logo or quote without prior written approval</td></tr>
+<tr><td>Reporting</td><td>Monthly performance report, weekly status call, two revision rounds, nothing published without WAB's written approval</td></tr>
+</tbody></table></section>
+<section class="slide appx"><div class="no"><b>06</b> Appendix · E</div><div class="copy"><h2>Team, website and handover</h2></div><table class="tbl"><tbody>
+<tr><td>Named team</td><td>Account manager, strategist, designer, videographer, media buyer; bilingual Arabic/English. Bios <span class="tbc">TBC</span></td></tr>
+<tr><td>Credentials</td><td>Campaigns, success cases and showreel at <a href="https://deck.inhaus.ae/" target="_blank" rel="noopener">deck.inhaus.ae</a>. Company profile, three client references and 3D/animation samples <span class="tbc">TBC</span></td></tr>
+<tr><td>Website</td><td>Bilingual, up to six pages, mobile PageSpeed 80+, on-page SEO, local parking schema, sitemap, Search Console; live before launch</td></tr>
+<tr><td>Tracking</td><td>GA4, Google Tag Manager, Meta and TikTok pixels, all on WAB-owned properties</td></tr>
+<tr><td>Ownership</td><td>Domain, hosting and SSL in WAB's name; full credentials and files handed over</td></tr>
+<tr><td>Licensing</td><td>Music, stock and talent licensed for paid use in the UAE for at least 12 months; raw footage and source files handed over</td></tr>
+<tr><td>Commercial</td><td>Pricing in the separate commercial proposal</td></tr>
+</tbody></table></section>
+</main>
+
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const cv = $('#c'), ctx = cv.getContext('2d'), intro = $('#intro');
+  const clamp = (v,a=0,b=1) => Math.max(a, Math.min(b, v));
+  const lerp = (a,b,t) => a+(b-a)*t;
+  const smooth = (a,b,v) => { const t = clamp((v-a)/(b-a)); return t*t*(3-2*t); };
+  const RAD = Math.PI/180;
+
+  /* ------------------------------------------------------------------
+     WORLD (units ≈ px at scale 1). Right-hand traffic, y grows downward.
+     Headings in degrees: 90 = down the screen, 180 = left, 270 = up, 0 = right.
+     ------------------------------------------------------------------ */
+  const LW = 160;            // lane width
+  const PW = 112;            // parallel-parking strip
+  const PWB = 236;           // perpendicular-bay strip
+  const R = 205;             // right turns (tight, lane to lane)
+  const RLM = 300;           // the mid-journey left turn
+  const RL = 340;            // the final left turn (wide, unhurried)
+  const EXT = 2600;          // how far streets run past the hero's route
+  const LF = 1300;           // WAB driveway
+  const HERO_L = 236, HERO_W = HERO_L*445/789;
+
+  // --- hero route: turtle moves ---------------------------------------
+  const segs = []; let cur = {x:0, y:-650, th:90}, total = 0;
+  const F = (len, o={}) => { segs.push({t:'F', s:total, len, ...cur, ...o}); cur = {x:cur.x+Math.cos(cur.th*RAD)*len, y:cur.y+Math.sin(cur.th*RAD)*len, th:cur.th}; total += len; };
+  const turn = (dir, r) => {   // dir +1 = the vehicle's right, -1 = the vehicle's left
+    const len = r*Math.PI/2, n = (cur.th + 90*dir)*RAD, cx = cur.x+Math.cos(n)*r, cy = cur.y+Math.sin(n)*r;
+    segs.push({t:'A', s:total, len, dir, r, cx, cy, th:cur.th});
+    const th1 = cur.th + 90*dir, fromC = (th1 - 90*dir)*RAD;
+    cur = {x:cx+Math.cos(fromC)*r, y:cy+Math.sin(fromC)*r, th:th1}; total += len;
+  };
+  // Lane lines used:  A: x=0   B: y=1100 (west) / y=1260 (east)   C: x=-1500   D: y=3000   E: x=-3000
+  F(650 + 1100 - R,        {gap:540});            // 01  down street A — parallel parked cars
+  turn(1, R);
+  F(1500 - R - RLM,        {gap:330});            // 02  west on B — heavier traffic
+  turn(-1, RLM);
+  F(3000 - 1100 - RLM - R, {gap:620, bays:true}); // 03  down C — a full row of bays
+  turn(1, R);
+  F(1500 - 2*R,            {gap:520});            // 04  west on D — the tempting space
+  turn(1, R);
+  F(3000 - 1260 - 2*R,     {gap:460});            // 05  back up E — another row
+  turn(1, R);
+  F(3000 - 2*R,            {gap:330});            // 06  east on B again — across its own tracks
+  turn(1, R);
+  F(4000 - RL - 1260 - R,  {gap:560});            // 07  down A again — one more near miss
+  const D_LEFT = total;
+  turn(-1, RL);                                   //     the last left
+  const D_DRIVE = total;
+  F(LF, {wab:true});                              // 08  straight in
+  const TOTAL = total, END = {x:cur.x, y:cur.y};
+  const turns = segs.filter(s => s.t === 'A');
+  // which signal is on at distance d: +1 the vehicle's right, -1 its left, 0 none.
+  // It starts 440 units before the steering begins and cancels just after the car has straightened.
+  const signalAt = d => { for (const t of turns) if (d > t.s - 440 && d < t.s + t.len + 50) return t.dir; return 0; };
+
+  const pose = d => {
+    d = clamp(d, 0, TOTAL);
+    let g = segs[segs.length-1]; for (const s of segs) if (d <= s.s + s.len) { g = s; break; }
+    const u = d - g.s;
+    if (g.t === 'F') return {x:g.x+Math.cos(g.th*RAD)*u, y:g.y+Math.sin(g.th*RAD)*u, th:g.th};
+    const th = g.th + g.dir*(u/g.r)/RAD, fromC = (th - 90*g.dir)*RAD;
+    return {x:g.cx+Math.cos(fromC)*g.r, y:g.cy+Math.sin(fromC)*g.r, th};
+  };
+
+  // --- features: a space that looks free and is not -------------------
+  // each sits on the hero's kerb; the hero eases toward it, then gives up
+  const kerbPoint = (leg, u) => { const th = leg.th*RAD, r = (leg.th+90)*RAD, off = LW/2 + PW/2 + 2;
+    return {x:leg.x+Math.cos(th)*u+Math.cos(r)*off, y:leg.y+Math.sin(th)*u+Math.sin(r)*off, th:leg.th, d:leg.s+u}; };
+  const legs = segs.filter(s => s.t === 'F');
+  const features = [
+    {...kerbPoint(legs[3], 560), len:300, kind:'hatch'},   // 04: marked, not a space
+    {...kerbPoint(legs[6], 1050), len:300, kind:'small'},  // 07: a small car is already in it
+  ];
+  const nudge = d => { let o = 0; for (const f of features) { const t = (d - (f.d - 150))/420; if (t > 0 && t < 1) o += 30*Math.sin(Math.PI*t)**2; } return o; };
+  const heroPose = d => { const h = pose(d), o = nudge(d), o2 = nudge(d+12), r = (h.th+90)*RAD;
+    return {x:h.x+Math.cos(r)*o, y:h.y+Math.sin(r)*o, th:h.th + Math.atan2(o2-o, 12)/RAD}; };
+
+  // --- streets: derived from the straight legs -------------------------
+  const streets = [];
+  for (const g of legs) {
+    if (g.wab) continue;
+    const v = g.th % 180 === 90, left = (g.th-90)*RAD;
+    const lane = v ? g.x : g.y, c = lane + (v ? Math.cos(left) : Math.sin(left))*LW/2;
+    const a0 = v ? g.y : g.x, a1 = a0 + (v ? Math.sin(g.th*RAD) : Math.cos(g.th*RAD))*g.len;
+    let s = streets.find(o => o.v === v && Math.abs(o.c - c) < 1);
+    if (!s) { s = {v, c, th:g.th, a:Infinity, b:-Infinity, pwR:PW, pwL:PW}; streets.push(s); }
+    s.a = Math.min(s.a, a0, a1); s.b = Math.max(s.b, a0, a1);
+    if (g.bays) s.pwR = PWB;
+    g.street = s;
+  }
+  for (const s of streets) {
+    s.a -= EXT; s.b += EXT;
+    const r = (s.th+90)*RAD; s.rs = Math.round(s.v ? Math.cos(r) : Math.sin(r)); // which way "right of base heading" points on the cross axis
+    s.neg = LW + (s.rs < 0 ? s.pwR : s.pwL); s.pos = LW + (s.rs > 0 ? s.pwR : s.pwL); s.half = Math.max(s.neg, s.pos);
+  }
+  const crosses = (a, b) => a.v !== b.v && b.c > a.a && b.c < a.b && a.c > b.a && a.c < b.b;
+
+  // --- vehicles ---------------------------------------------------------
+  let seed = 11; const rnd = () => (seed = (seed*16807) % 2147483647) / 2147483647;
+  //            length width  nose  tail  cabin-start cabin-length
+  const KINDS = [[168,  84,  .40,  .44,  .26,       .50],   // compact
+                 [196,  88,  .34,  .46,  .22,       .50],   // saloon
+                 [214,  94,  .30,  .40,  .20,       .56],   // SUV
+                 [236,  98,  .22,  .24,  .14,       .64],   // van
+                 [226,  92,  .28,  .22,  .20,       .34]];  // pickup
+  const pick = () => { const r = rnd(); return r < .16 ? 0 : r < .52 ? 1 : r < .80 ? 2 : r < .91 ? 3 : 4; };
+  const parked = [], oncoming = [], bayLines = [];
+  const pathPts = []; for (let d = 0; d <= TOTAL; d += 36) pathPts.push(pose(d));
+  const nearPath = (x, y, r) => pathPts.some(p => Math.abs(p.x-x) < r && Math.abs(p.y-y) < r && Math.hypot(p.x-x, p.y-y) < r);
+
+  for (const s of streets) {
+    const blocked = mid => streets.some(o => crosses(s, o) && Math.abs(mid - o.c) < o.half + 150);
+    for (const side of [1, -1]) {                 // +1 = right of base heading, -1 = the far kerb
+      const bays = side === 1 && s.pwR === PWB, pw = side === 1 ? s.pwR : s.pwL;
+      const lat = s.c + s.rs*side*(LW + pw/2 + 2);
+      for (let t = s.a + 120; t < s.b - 120;) {
+        const k = pick(), len = KINDS[k][0], step = bays ? 132 : len + 34 + rnd()*20, mid = t + step/2;
+        const x = s.v ? lat : mid, y = s.v ? mid : lat;
+        const feat = features.some(f => Math.hypot(f.x-x, f.y-y) < f.len/2 + (bays ? 60 : len/2) - 6);
+        const mouth = s.v && Math.abs(s.c - LW/2) < 1 && side === -1 && Math.abs(mid - END.y) < 340;
+        if (!blocked(mid) && !feat && !mouth && !nearPath(x, y, 120)) {
+          if (bays) { parked.push({x:x + s.rs*(rnd()-.5)*14, y, th:s.th + 90 + (rnd() < .5 ? 180 : 0) + (rnd()-.5)*3, k:k === 3 || k === 4 ? 2 : k});
+                      bayLines.push({x, y:y - step/2, s}); }
+          else parked.push({x:x + (s.v ? (rnd()-.5)*10 : 0), y:y + (s.v ? 0 : (rnd()-.5)*10), th:s.th + (side === 1 ? 0 : 180) + (rnd()-.5)*3, k});
+        }
+        t += step;
+      }
+    }
+  }
+  for (const f of features) if (f.kind === 'small') { const b = f.th*RAD; parked.push({x:f.x + Math.cos(b)*52, y:f.y + Math.sin(b)*52, th:f.th + 4, k:0}); }
+
+  // oncoming traffic lives on the leg the hero is driving, one lane to the vehicle's left
+  for (const g of legs) {
+    if (g.wab) continue;
+    const dir = {x:Math.cos(g.th*RAD), y:Math.sin(g.th*RAD)}, left = {x:Math.cos((g.th-90)*RAD), y:Math.sin((g.th-90)*RAD)};
+    // u = distance ahead of the leg's start, measured along the hero's direction; cars run at 0.9× against it
+    for (let u = -900 + rnd()*200; u < g.len*1.9 + 1500; u += g.gap + rnd()*g.gap*.7)
+      oncoming.push({g, u, dir, left, k:pick()});
+  }
+  const onPos = (c, d) => { const u = c.u - (d - c.g.s)*.9; return {x:c.g.x + c.dir.x*u + c.left.x*LW, y:c.g.y + c.dir.y*u + c.left.y*LW}; };
+  const onAlpha = (c, d) => smooth(c.g.s - 150, c.g.s + 170, d) * (1 - smooth(c.g.s + c.g.len - 40, c.g.s + c.g.len + 230, d));
+  // drop any car that would be in the hero's way while it turns across the lane
+  for (let i = oncoming.length - 1; i >= 0; i--) { const c = oncoming[i];
+    for (let d = Math.max(0, c.g.s - 150); d < c.g.s + c.g.len + 230; d += 24) {
+      if (onAlpha(c, d) < .04) continue; const q = onPos(c, d), h = heroPose(d);
+      if (Math.hypot(q.x-h.x, q.y-h.y) < 150) { oncoming.splice(i, 1); break; } } }
+
+  /* ---------------- sprites: quiet grey forms ---------------- */
+  const SPR = 2, PAD = 34;
+  const rr = (c,x,y,w,h,r) => { c.beginPath(); c.roundRect(x,y,w,h,r); };
+  const sprites = KINDS.map(([L,Wd,nose,tail,cs,cl], i) => {
+    const o = document.createElement('canvas'); o.width = (L+PAD*2)*SPR; o.height = (Wd+PAD*2)*SPR;
+    const c = o.getContext('2d'); c.scale(SPR,SPR); c.translate(PAD,PAD);
+    const rad = [Wd*tail, Wd*nose, Wd*nose, Wd*tail];
+    c.save(); c.shadowColor = 'rgba(40,44,52,.17)'; c.shadowBlur = 20; c.shadowOffsetX = 4*SPR; c.shadowOffsetY = 8*SPR;
+    rr(c,0,0,L,Wd,rad); c.fillStyle = '#d3d6da'; c.fill(); c.restore();
+    let g = c.createLinearGradient(0,0,0,Wd); g.addColorStop(0,'#e4e6e9'); g.addColorStop(.5,'#d6d9dd'); g.addColorStop(1,'#c5c9ce');
+    rr(c,0,0,L,Wd,rad); c.fillStyle = g; c.fill();
+    const inset = Wd*.11;
+    rr(c,L*cs,inset,L*cl,Wd-inset*2,Wd*.22); c.fillStyle = '#b9bdc3'; c.fill();
+    g = c.createLinearGradient(0,inset,0,Wd-inset); g.addColorStop(0,'#f1f2f4'); g.addColorStop(1,'#e0e2e5');
+    rr(c,L*(cs+.07),inset+Wd*.075,L*(cl-.14),Wd-inset*2-Wd*.15,Wd*.17); c.fillStyle = g; c.fill();
+    if (i === 4) { rr(c,L*.04,inset*1.1,L*.30,Wd-inset*2.2,6); c.fillStyle = '#c3c7cc'; c.fill(); }   // pickup bed
+    return {o, L, Wd};
+  });
+  const drawSprite = (k, x, y, th) => { const s = sprites[k]; ctx.save(); ctx.translate(x,y); ctx.rotate(th*RAD); ctx.drawImage(s.o, -s.L/2-PAD, -s.Wd/2-PAD, s.L+PAD*2, s.Wd+PAD*2); ctx.restore(); };
+  const hero = new Image(); hero.src = 'assets/hero-car.png';
+
+  /* ---------------- timeline ---------------- */
+  const T = {hold:.03, arrive:.875, taken:.915, final:.945, tag:.965};
+  const driveDist = p => {
+    const t = clamp((p - T.hold)/(T.arrive - T.hold)), e = .06, o = .10, area = 1 - e/2 - o/2;
+    let v;
+    if (t < e) v = t*t/(2*e);
+    else if (t < 1-o) v = e/2 + (t-e);
+    else { const u = (t-(1-o))/o; v = e/2 + (1-o-e) + o*(u - u*u/2); }
+    return TOTAL * v/area;
+  };
+  const driveP = dist => { let lo = T.hold, hi = T.arrive; for (let i=0;i<30;i++){ const m=(lo+hi)/2; driveDist(m) < dist ? lo = m : hi = m; } return lo; };
+  const STOPS = [0, ...legs.filter(g => !g.wab).map(g => driveP(g.s + g.len*.5)), T.arrive + .02, 1];
+
+  let p = 0, target = 0, vw = 0, vh = 0, dpr = 1, ind = {l:0, r:0};
+  const resize = () => { dpr = Math.min(2, devicePixelRatio||1); vw = innerWidth; vh = innerHeight; cv.width = vw*dpr; cv.height = vh*dpr; };
+  const introMax = () => intro.offsetHeight - innerHeight;
+  const readScroll = () => { target = clamp((scrollY - intro.offsetTop)/introMax()); };
+  addEventListener('resize', () => { resize(); readScroll(); }); addEventListener('scroll', readScroll, {passive:true});
+
+  const hline = (s, off, dash, color, w) => { ctx.strokeStyle = color; ctx.lineWidth = w; ctx.setLineDash(dash); ctx.beginPath();
+    s.v ? (ctx.moveTo(s.c+off, s.a), ctx.lineTo(s.c+off, s.b)) : (ctx.moveTo(s.a, s.c+off), ctx.lineTo(s.b, s.c+off)); ctx.stroke(); };
+  const band = (s, n, q, color) => { ctx.fillStyle = color; s.v ? ctx.fillRect(s.c-n, s.a, n+q, s.b-s.a) : ctx.fillRect(s.a, s.c-n, s.b-s.a, n+q); };
+
+  function frame() {
+    requestAnimationFrame(frame);
+    if (scrollY > intro.offsetTop + intro.offsetHeight) return;      // deck is on screen; the intro rests
+    p += (target - p) * .09; if (Math.abs(target-p) < .00004) p = target;
+    const d = driveDist(p), h = heroPose(d);
+    const scale = clamp(Math.max(vw/1300, vh/1500), .5, 1.15);
+
+    // camera: the hero's position averaged over a short stretch of road, so it eases through
+    // corners and the car drifts a little off centre in a turn, then settles back
+    const win = Math.min(300, d, TOTAL - d); let cx = 0, cy = 0;
+    for (let i = -4; i <= 4; i++) { const q = pose(d + win*i/4); cx += q.x/9; cy += q.y/9; }
+
+    const envIn = smooth(60, 620, d);
+    const roadsOut = 1 - smooth(D_LEFT - 80, D_DRIVE + 520, d);
+    const parkedA = envIn * (1 - smooth(D_LEFT - 380, D_DRIVE + 260, d));
+    const trafficOut = 1 - smooth(D_LEFT - 900, D_LEFT - 260, d);
+    const wabIn = smooth(D_LEFT - 500, D_DRIVE + 120, d);
+    const taken = 0;   // the car stays on the turntable for the final frame
+
+    ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,vw,vh);
+    ctx.save();
+    ctx.translate(vw/2, vh/2); ctx.scale(scale, scale); ctx.translate(-cx, -cy);
+    const viewR = Math.hypot(vw, vh)/2/scale + 320;
+    const seen = (x, y) => Math.abs(x-cx) < viewR && Math.abs(y-cy) < viewR;
+
+    if (envIn*roadsOut > .003) {
+      ctx.globalAlpha = envIn*roadsOut;
+      for (const s of streets) band(s, s.neg, s.pos, '#eff0f2');
+      for (const s of streets) band(s, LW, LW, '#f6f7f8');
+      // bay markings and the hatched non-space
+      ctx.setLineDash([]); ctx.strokeStyle = '#dadde1'; ctx.lineWidth = 3;
+      for (const b of bayLines) if (seen(b.x, b.y)) { ctx.beginPath(); ctx.moveTo(b.x - PWB/2 + 10, b.y); ctx.lineTo(b.x + PWB/2 - 10, b.y); ctx.stroke(); }
+      for (const f of features) if (f.kind === 'hatch' && seen(f.x, f.y)) {
+        ctx.save(); ctx.translate(f.x, f.y); ctx.rotate(f.th*RAD); ctx.beginPath(); ctx.rect(-f.len/2 + 14, -PW/2 + 12, f.len - 28, PW - 24); ctx.stroke(); ctx.clip();
+        ctx.beginPath(); for (let x = -f.len; x < f.len; x += 30) { ctx.moveTo(x, PW/2); ctx.lineTo(x + PW, -PW/2); } ctx.stroke(); ctx.restore(); }
+      for (const s of streets) { hline(s, -LW, [], '#dfe1e4', 3); hline(s, LW, [], '#dfe1e4', 3); }
+      for (const s of streets) hline(s, 0, [54, 62], '#d3d6da', 5);
+      ctx.setLineDash([]);
+      for (const a of streets) if (a.v) for (const b of streets) if (crosses(a, b)) {
+        ctx.fillStyle = '#eff0f2'; ctx.fillRect(a.c - a.neg, b.c - b.neg, a.neg + a.pos, b.neg + b.pos);
+        ctx.fillStyle = '#f6f7f8'; ctx.fillRect(a.c - LW - 3, b.c - b.neg, LW*2 + 6, b.neg + b.pos); ctx.fillRect(a.c - a.neg, b.c - LW - 3, a.neg + a.pos, LW*2 + 6); }
+    }
+
+    // WAB: one clean driveway and a turntable
+    if (wabIn > .003) {
+      ctx.globalAlpha = wabIn * (1 - taken);
+      const x0 = LW*1.5 + PW, y = END.y, half = LW*.62;
+      const g = ctx.createLinearGradient(x0 - 60, 0, x0 + 420, 0); g.addColorStop(0, 'rgba(250,250,251,0)'); g.addColorStop(1, 'rgba(250,250,251,1)');
+      ctx.fillStyle = g; ctx.fillRect(x0 - 60, y-half, END.x - x0 + 60, half*2);
+      ctx.save(); ctx.shadowColor = 'rgba(40,44,52,.15)'; ctx.shadowBlur = 54*dpr; ctx.shadowOffsetY = 18*dpr;
+      ctx.beginPath(); ctx.arc(END.x, y, 160, 0, Math.PI*2); ctx.fillStyle = '#ffffff'; ctx.fill(); ctx.restore();
+      ctx.strokeStyle = '#d9dcdf'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(END.x, y, 146, 0, Math.PI*2); ctx.stroke();
+      ctx.strokeStyle = '#e9ebed'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(END.x, y, 134, 0, Math.PI*2); ctx.stroke();
+    }
+
+    if (parkedA > .003) { ctx.globalAlpha = parkedA; for (const c of parked) if (seen(c.x, c.y)) drawSprite(c.k, c.x, c.y, c.th); }
+    for (const c of oncoming) {
+      const a = onAlpha(c, d) * envIn * trafficOut; if (a < .01) continue;
+      const q = onPos(c, d); if (!seen(q.x, q.y)) continue;
+      ctx.globalAlpha = a; drawSprite(c.k, q.x, q.y, c.g.th + 180);
+    }
+
+    // turn signals: vehicle-relative, on shortly before a turn, off once it has straightened
+    const want = signalAt(d);
+    const blink = (performance.now() % 760) < 400 ? 1 : 0;
+    ind.r += ((want === 1 ? blink : 0) - ind.r) * .35; ind.l += ((want === -1 ? blink : 0) - ind.l) * .35;
+
+    if (hero.complete && hero.naturalWidth) {
+      const k = 1 - taken*.12;
+      ctx.globalAlpha = 1 - taken;
+      ctx.save(); ctx.translate(h.x, h.y); ctx.rotate((h.th - 90 + taken*90)*RAD); ctx.scale(k, k);
+      ctx.save(); ctx.shadowColor = 'rgba(30,34,42,.28)'; ctx.shadowBlur = 30*dpr; ctx.shadowOffsetX = 7*dpr*scale; ctx.shadowOffsetY = 14*dpr*scale;
+      ctx.drawImage(hero, -HERO_W/2, -HERO_L/2, HERO_W, HERO_L); ctx.restore();
+      // in the car's own frame the nose points to +y, so the vehicle's LEFT is +x and its RIGHT is −x
+      for (const [side, v] of [[1, ind.l], [-1, ind.r]]) if (v > .02) {
+        for (const [lx, ly, r] of [[.385, .452, 11], [.47, .052, 8], [.40, -.455, 10]]) {
+          const x = side*lx*HERO_W, y = ly*HERO_L, g = ctx.createRadialGradient(x, y, 0, x, y, r*2.1);
+          g.addColorStop(0, `rgba(255,176,32,${.95*v})`); g.addColorStop(.3, `rgba(255,150,10,${.6*v})`); g.addColorStop(1, 'rgba(255,150,10,0)');
+          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r*2.1, 0, Math.PI*2); ctx.fill();
+        } }
+      ctx.restore();
+    }
+    ctx.restore(); ctx.globalAlpha = 1;
+
+    /* ---------- typography ---------- */
+    const carHalf = HERO_L*scale/2, bH = $('#before').offsetHeight, lH = $('#logo').offsetHeight;
+    const bigY = Math.max(vh*.085, vh/2 - carHalf - vh*.04 - bH);
+    const shrink = smooth(T.hold*.6, T.hold + .035, p), small = Math.min(.2, 150/$('#before').offsetWidth*1.15);
+    const bOut = 1 - smooth(driveP(D_LEFT - 200), driveP(D_DRIVE + 200), p);
+    setT('#before', lerp(bigY, vh*.105, shrink), lerp(1, small, shrink), bOut);
+    // NOW takes BEFORE's place on arrival, then gives way to WAB above the car and the line below it
+    const nIn = smooth(driveP(D_DRIVE + LF*.55), T.arrive + .008, p), fin = smooth(T.taken + .008, T.final + .008, p);
+    setT('#now', bigY + 26*(1-nIn) - 14*fin, 1, nIn*(1-fin));
+    const disc = 160*scale, tagH = $('#tag').offsetHeight;
+    const logoTop = Math.max(vh*.075, vh/2 - disc - vh*.045 - lH);
+    const lg = $('#logo'); lg.style.opacity = fin.toFixed(3); lg.style.transform = `translate(-50%,${(logoTop + 14*(1-fin)).toFixed(1)}px)`;
+    const tIn = smooth(T.final + .004, T.tag, p);
+    const tagTop = Math.min(vh - tagH - vh*.05, vh/2 + disc + vh*.055);
+    setT('#tag', tagTop + 22*(1-tIn), 1, tIn);
+    $('#hint').style.opacity = (1 - smooth(.002, .014, p)).toFixed(3);
+    $('#prog').style.width = (p*100).toFixed(2)+'%';
+  }
+  function setT(sel, y, s, o) { const e = $(sel); e.style.opacity = o.toFixed(3); e.style.transform = `translate(0,${y.toFixed(1)}px) scale(${s.toFixed(4)})`; }
+
+  /* presenter keys: step through the intro beats, then slide by slide */
+  addEventListener('keydown', e => {
+    const fwd = ['ArrowRight','ArrowDown','PageDown',' '].includes(e.key), back = ['ArrowLeft','ArrowUp','PageUp'].includes(e.key);
+    if (!fwd && !back) return; e.preventDefault();
+    const tops = [...STOPS.map(s => intro.offsetTop + s*introMax()), ...[...document.querySelectorAll('.slide')].map(el => el.offsetTop), ...(window.WAB_ROAD_STOPS ? window.WAB_ROAD_STOPS() : [])].sort((a,b) => a-b);
+    const next = fwd ? tops.find(t => t > scrollY + 4) : [...tops].reverse().find(t => t < scrollY - 4);
+    if (next !== undefined) scrollTo({top: next, behavior:'smooth'});
+  });
+  // QA: jump to an intro progress value with no easing, e.g. WAB_SEEK(.5); WAB_INFO() lists the turns
+  window.WAB_SEEK = v => { scrollTo(0, intro.offsetTop + v*introMax()); target = p = v; };
+  window.WAB_SIGNAL = v => ({'1':'right','-1':'left','0':'off'})[signalAt(driveDist(v))];
+  window.WAB_INFO = () => ({total:Math.round(TOTAL), search:Math.round(D_LEFT), turns:turns.map(t => ({at:+driveP(t.s).toFixed(3), mid:+driveP(t.s + t.len/2).toFixed(3), side:t.dir === 1 ? 'right' : 'left'})), parked:parked.length, oncoming:oncoming.length, ind});
+
+  resize(); readScroll(); p = target; requestAnimationFrame(frame);
+})();
+</script>
+
+<script>
+(() => {
+  const btn = document.getElementById('navBtn'), list = document.getElementById('navList'), cur = document.getElementById('navCur');
+  const links = [...list.querySelectorAll('a')];
+  const targets = links.map(a => document.getElementById(a.dataset.t));
+  const names = ['Intro','01 Challenge','02 Strategic Idea','03 Campaign','04 Social & Culture','05 Making It Work','06 Appendix'];
+  const setOpen = o => { list.hidden = !o; btn.setAttribute('aria-expanded', o); };
+  btn.addEventListener('click', e => { e.stopPropagation(); setOpen(list.hidden); });
+  document.addEventListener('click', e => { if (!list.hidden && !list.contains(e.target)) setOpen(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); }, true);
+  links.forEach((a, i) => a.addEventListener('click', e => { e.preventDefault(); setOpen(false); scrollTo({top: i === 0 ? 0 : targets[i].offsetTop, behavior:'smooth'}); }));
+  let last = -1;
+  const update = () => { const y = scrollY + innerHeight*0.4; let k = 0;
+    targets.forEach((t, i) => { if (i > 0 && t.offsetTop <= y) k = i; });
+    if (k !== last) { last = k; links.forEach((a, i) => a.classList.toggle('on', i === k)); cur.textContent = names[k]; } };
+  addEventListener('scroll', update, {passive:true}); addEventListener('resize', update); update();
+})();
+</script>
+
+<script>
+(() => {
+  const wrap = document.getElementById('rollout'); if (!wrap) return;
+  const stage = wrap.querySelector('.roadstage'), road = document.getElementById('road'), marks = document.getElementById('marks');
+  const focus = wrap.querySelector('.focus'), fEye = document.getElementById('fEye'), fTitle = document.getElementById('fTitle'),
+        fDesc = document.getElementById('fDesc'), fChips = document.getElementById('fChips'), fImg = document.getElementById('fImg');
+  const LOGIC = {build:'We build the infrastructure first', interest:'Then we create interest', reveal:'Then we reveal the campaign',
+                 behaviour:'Then we turn attention into behaviour', longevity:'Then we create longevity'};
+  const I = 'assets/img/';
+  const M = [
+    // TEASE
+    {at:.03, ph:'tease', lg:'build', t:'Website live', d:'The campaign destination is ready before launch. GA4, pixels and UTMs in place.', img:I+'wab-entrance.jpg'},
+    {at:.075, ph:'tease', lg:'build', t:'Maps ready', d:'Google Business Profile and the Maps listing are live before we push any traffic.', img:'assets/map/overview.jpg'},
+    {at:.12, ph:'tease', lg:'build', t:'Explainer ready', d:'The 3D explainer and How-to are produced now and held for launch: arrival, handover, automated parking, retrieval.', img:I+'kv-now.jpg'},
+    {at:.165, ph:'tease', lg:'interest', t:'Teaser creative', d:'The BEFORE behaviour appears: circling, waiting, street frustration. The idea is not revealed yet.', img:I+'circling-v2.jpg'},
+    {at:.205, ph:'tease', lg:'interest', t:'Street questions', d:'“What would you do with 30 free minutes?” Conversation starts before the facility opens.', img:I+'phone-interview.png', phone:1},
+    {at:.245, ph:'tease', lg:'interest', t:'Organic starts', d:'Short observations, street clips and the first neighbourhood stories.', img:I+'merchant-b.jpg'},
+    {at:.285, ph:'tease', lg:'interest', t:'Paid teaser', d:'A light paid pulse, not full weight. It builds recognition and retargetable audiences.', chips:['Meta','Video','Local awareness','Branded Search']},
+    // LAUNCH
+    {at:.335, ph:'launch', lg:'reveal', t:'Hero film', big:1, d:'The split-screen BEFORE / NOW film goes live. One driver still searching. One already parked. The campaign reveal.', img:I+'storyboard.jpg'},
+    {at:.375, ph:'launch', lg:'reveal', t:'Campaign KV', d:'The BEFORE / NOW key visual launches everywhere at once.', img:I+'kv-map.jpg', chips:['Outdoor','Hoarding','Social','Digital','Website','Maps & Search']},
+    {at:.415, ph:'launch', lg:'reveal', t:'Paid scales', big:1, d:'Media moves from teaser pulse to full launch weight.', chips:['Google Search & Maps','Meta','TikTok / Reels','YouTube','LinkedIn']},
+    {at:.455, ph:'launch', lg:'behaviour', t:'3D explainer live', d:'The campaign creates interest. The explainer creates understanding.', img:I+'kv-now.jpg', chips:['Pinned on social','Website','YouTube','FAQs','Business Profile']},
+    {at:.49, ph:'launch', lg:'behaviour', t:'How-to', d:'How to arrive. How to leave the car. What happens next. How retrieval works.', img:I+'phone-dashcam.png', phone:1},
+    {at:.525, ph:'launch', lg:'reveal', t:'PR', d:'Press release, media outreach and tourism listings, the same day the campaign goes public.', chips:['Press release','Media outreach','Tourism listings']},
+    {at:.56, ph:'launch', lg:'reveal', t:'Creators Wave 1', d:'Car and technology, food and destination creators show the experience, not just the opening.', chips:['Car / tech','Food / destination']},
+    {at:.595, ph:'launch', lg:'reveal', t:'Launch activation', d:'An on-site launch-day moment, if included in the final scope.', chips:['Optional'], opt:1},
+    {at:.63, ph:'launch', lg:'behaviour', t:'Retargeting', d:'Launch attention becomes behaviour. We follow up with the people who already showed interest.', chips:['Website visitors','Video viewers','Social engagers','Search & Maps users']},
+    // ALWAYS ON
+    {at:.68, ph:'always', lg:'longevity', t:'Campaign series', d:'He’s still parking. He’s already shopping. Already having lunch. Already with the family.', img:I+'static-shopping.jpg'},
+    {at:.725, ph:'always', lg:'longevity', t:'Dashcam', d:'Real journeys into WAB and real automated parking. Myth-busting and FAQs.', img:I+'phone-dashcam.png', phone:1},
+    {at:.77, ph:'always', lg:'longevity', t:'Street content', d:'Less about the problem, more about time saved, local trivia, reactions and parking habits.', img:I+'phone-interview.png', phone:1},
+    {at:.815, ph:'always', lg:'longevity', t:'Documentary', d:'Old shopkeepers, restaurants, traders and residents. The neighbourhood gives the campaign depth.', img:I+'merchant.jpg'},
+    {at:.86, ph:'always', lg:'longevity', t:'Retail content', d:'Shopping can be. Lunch can be. As Simple as That.', img:I+'souq-stroll.jpg'},
+    {at:.905, ph:'always', lg:'longevity', t:'Creators Wave 2', d:'Heritage and neighbourhood, family and lifestyle, so creator activity isn’t all in launch week.', chips:['Heritage / neighbourhood','Family / lifestyle']},
+    {at:.95, ph:'always', lg:'longevity', t:'Optimise paid', d:'Paid never stops. Awareness comes down; conversion and retargeting take over.', chips:['Search & Maps','Retargeting','Conversion']}
+  ];
+  M.forEach((m, i) => { const el = document.createElement('div'); el.className = 'mk ' + (i % 2 ? 'dn' : 'up') + (m.big ? ' big' : '');
+    el.style.left = (m.at*100) + '%'; el.innerHTML = '<i></i><b>' + m.t + '</b>'; marks.appendChild(el); m.el = el; });
+  const phs = [...wrap.querySelectorAll('.phases2 span')];
+
+  // media pressure: teaser pulse → launch peak → always-on optimisation
+  const th = x => { const g = (c, w) => Math.exp(-(((x-c)/w)**2));
+    return 3 + 5*g(.2,.09) + 22*g(.44,.11) + (x > .5 ? 9*(1 - Math.exp(-(x-.5)/.05)) * (1 - .25*(x-.5)) : 0); };
+  let up = [], dn = []; for (let k = 0; k <= 100; k++) { const x = k/100, h = th(x); up.push((x*1000).toFixed(1)+','+(30-h).toFixed(1)); dn.unshift((x*1000).toFixed(1)+','+(30+h).toFixed(1)); }
+  const d = 'M' + up.join(' L') + ' L' + dn.join(' L') + ' Z';
+  document.getElementById('bandPath').setAttribute('d', d); document.getElementById('bandPath2').setAttribute('d', d);
+
+  const START = {eye:'Phase 1 · Tease', t:'We build the infrastructure first.', d:'Then we create interest, reveal the campaign, turn attention into behaviour and create longevity. Scroll to drive through the plan.'};
+  const END = {eye:'Three months · one straight line', t:'As Simple as That.', d:'A complicated launch plan, in one direct journey.', chips:['Build','Interest','Reveal','Behaviour','Longevity']};
+  const PH = {tease:'Phase 1 · Tease', launch:'Phase 2 · Launch', always:'Phase 3 · Always on'};
+  const clamp = v => Math.max(0, Math.min(1, v));
+  const LEAD = .03, SPAN = .94;
+  let shown = null;
+  const show = (key, c, big) => {
+    if (shown === key) return; shown = key;
+    fEye.textContent = c.eye; fTitle.textContent = c.t; fDesc.textContent = c.d;
+    fChips.innerHTML = (c.chips || []).map(x => '<span' + (x === 'Optional' ? ' class="opt"' : '') + '>' + x + '</span>').join('');
+    fImg.innerHTML = c.img ? '<img src="' + c.img + '" alt="" class="' + (c.phone ? 'ph' : '') + '">' : '';
+    fImg.style.display = c.img ? '' : 'none';
+    focus.classList.toggle('big', !!big);
+    focus.classList.remove('swap'); void focus.offsetWidth; focus.classList.add('swap');
+  };
+  const update = () => {
+    const r = wrap.getBoundingClientRect(), span = r.height - innerHeight;
+    const p = span > 0 ? clamp(-r.top / span) : 0, t = clamp((p - LEAD) / SPAN);
+    const w = road.clientWidth, px = t*w;
+    road.style.setProperty('--px', px + 'px');
+    let cur = -1; M.forEach((m, i) => { if (t >= m.at - 1e-4) cur = i; });
+    M.forEach((m, i) => { m.el.classList.toggle('past', i < cur); m.el.classList.toggle('cur', i === cur); });
+    const ph = cur < 0 ? 'tease' : M[cur].ph;
+    stage.dataset.phase = ph; phs.forEach(s => s.classList.toggle('on', s.dataset.ph === ph));
+    if (t >= .985) { M.forEach(m => { m.el.classList.add('past'); m.el.classList.remove('cur'); }); show('end', END, true); }
+    else if (cur < 0) show('start', START, false);
+    else { const m = M[cur]; show(cur, {eye: PH[m.ph] + ' · ' + LOGIC[m.lg], t:m.t, d:m.d, chips:m.chips, img:m.img, phone:m.phone}, m.big); }
+  };
+  addEventListener('scroll', () => requestAnimationFrame(update), {passive:true});
+  addEventListener('resize', update); update();
+  // presenter keys: one stop per milestone, plus the start and the finished journey
+  window.WAB_ROAD_STOPS = () => { const top = wrap.getBoundingClientRect().top + scrollY, span = wrap.offsetHeight - innerHeight;
+    return [...M.map(m => top + (LEAD + m.at*SPAN)*span + 2), top + (LEAD + .99*SPAN)*span]; };
+})();
+</script>
+</body>
+</html>

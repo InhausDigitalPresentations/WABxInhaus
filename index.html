@@ -277,6 +277,38 @@
   }
   .tbl .ar{text-align:right;font-family:"Geeza Pro","Noto Naskh Arabic","Segoe UI","Arial",sans-serif;font-size:1.12em;color:var(--ink)}
   .tbl.msg td:first-child{width:24%}
+  .tbl .team{list-style:none;margin:0 0 8px;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 18px}
+  .tbl .team b{display:block;color:var(--ink)}
+  @media (max-width:820px){.tbl .team{grid-template-columns:1fr 1fr}}
+
+  /* thank-you close */
+  .thanks{background:var(--ink);color:#fff;border-top:0;align-content:center;justify-items:start;gap:clamp(20px,4vh,44px)}
+  .thanks .mark{font-size:clamp(14px,1.4vw,18px);letter-spacing:.3em}
+  .thanks h2{max-width:none;font-size:clamp(64px,12vw,200px);letter-spacing:-.05em;line-height:.9}
+  .thanks .links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;border-top:1px solid rgba(255,255,255,.35)}
+  .thanks .links a{display:grid;gap:10px;padding:22px 22px 6px 0;color:#fff;text-decoration:none;font-size:clamp(20px,2.4vw,36px);font-weight:700;letter-spacing:-.03em}
+  .thanks .links a+a{padding-left:22px;border-left:1px solid rgba(255,255,255,.2)}
+  .thanks .links small{font-size:11px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+  .thanks .links i{font-style:normal;color:#12ae4c}
+  .thanks .links a:hover{color:#12ae4c}
+  .thanks .links a:focus-visible{outline:2px solid #12ae4c;outline-offset:4px}
+  @media (max-width:820px){.thanks .links{grid-template-columns:1fr}.thanks .links a+a{padding-left:0;border-left:0;border-top:1px solid rgba(255,255,255,.2)}}
+
+  /* creator shortlist */
+  .creators{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--ink)}
+  .cc{display:grid;align-content:start;gap:6px;padding:22px 20px 8px 0}
+  .cc+.cc{padding-left:20px;border-left:1px solid var(--rule)}
+  .cc small{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--soft);margin-bottom:10px}
+  .cc img,.cc .ph{width:84px;height:84px;border-radius:50%;object-fit:cover;margin-bottom:10px;background:#e3e5e8}
+  .cc .ph{border:1px dashed #b9bcc1;background:transparent}
+  .cc b{font-size:clamp(17px,1.5vw,22px);letter-spacing:-.02em;color:var(--ink)}
+  .cc .h{font-size:13px;color:var(--mid)}
+  .cc .f{font-size:13px;color:var(--ink);font-weight:700}
+  .cc p{font-size:clamp(13px,1vw,15px);margin-top:6px}
+  .cc .alt{font-size:12.5px;color:var(--soft);border-top:1px solid var(--rule);padding-top:8px}
+  .cc.tbd b{color:var(--mid)}
+  .note.small{font-size:12px}
+  @media (max-width:820px){.creators{grid-template-columns:1fr 1fr}.cc:nth-child(3){padding-left:0;border-left:0}}
 </style>
 </head>
 <body>
@@ -412,20 +444,35 @@
 <tr><td>KPIs · Month 2</td><td>Direction requests, “Get directions” clicks, cars parked</td></tr>
 <tr><td>KPIs · Month 3</td><td>Growth in cars parked, repeat visits, retail and leasing enquiries. Numeric targets <span class="tbc">TBC</span></td></tr>
 <tr><td>Governance</td><td>WAB-owned accounts with Inhaus as manager; UTMs on every ad; no paid followers; follower growth always reported next to engagement</td></tr>
-<tr><td>Creators</td><td>Four creators (food, car/tech, heritage, family), all with UAE advertiser permits and disclosure. Shortlist <span class="tbc">TBC</span></td></tr>
+<tr><td>Creators</td><td>Four creator territories: food, car &amp; tech, heritage and family. Shortlist on the next page.</td></tr>
 <tr><td>PR</td><td>Launch press release, media list and tourism listings; optional launch-day activation</td></tr>
 <tr><td>Government protocol</td><td>No RTA, Dubai Municipality or Dubai Culture name, logo or quote without prior written approval</td></tr>
 <tr><td>Reporting</td><td>Monthly performance report, weekly status call, two revision rounds, nothing published without WAB's written approval</td></tr>
 </tbody></table></section>
+<section class="slide appx" id="creators"><div class="no"><b>06</b> Appendix · Creators</div><div class="copy"><h2>Creator shortlist</h2><p>Four creator territories, each chosen for a job in the campaign.</p></div>
+<div class="creators">
+ <article class="cc"><small>Food</small><img src="assets/img/creators/mr-taster.webp" alt="Mr Taster profile picture"><b>Hubert Sepidnam</b><span class="h">@mr.taster · Instagram</span><span class="f">≈ 3M followers</span><p>Dubai-based food creator with strong restaurant and food-discovery relevance.</p></article>
+ <article class="cc"><small>Car &amp; Tech</small><img src="assets/img/creators/moneim.webp" alt="Mohamed Moneim profile picture"><b>Mohamed Moneim</b><span class="h">@moneim · Instagram</span><span class="f">≈ 589K followers</span><p>Dubai-based creator with strong automotive, tech and lifestyle relevance.</p><p class="alt">Alternative: Moath Alherani, @moath.alherani (≈ 95K), whose content sits between automotive, AI and technology.</p></article>
+ <article class="cc tbd"><small>Heritage / UAE Culture</small><div class="ph" aria-hidden="true"></div><b>Heritage / UAE Culture Creator</b><span class="h">Final shortlist in progress</span><span class="f">&nbsp;</span><p>Must have genuine roots in Emirati culture, heritage, old Dubai and local storytelling.</p></article>
+ <article class="cc"><small>Family</small><img src="assets/img/creators/nouromarfamily.webp" alt="Nour and Omar profile picture"><b>Nour &amp; Omar</b><span class="h">@nouromarfamily · Instagram</span><span class="f">≈ 582K followers</span><p>Dubai-based family and lifestyle creators with strong relevance for family audiences.</p></article>
+</div>
+<p class="note">Creator shortlist is indicative and subject to final audience review, availability, commercial alignment and client approval. Final appointed creators will be required to hold the applicable UAE Advertiser Permit and comply with all required advertising disclosures.</p>
+<p class="note small">Final selection based on UAE audience relevance, content fit, engagement, availability and commercial alignment. Follower counts from public Instagram profiles, October 2026.</p>
+</section>
 <section class="slide appx"><div class="no"><b>06</b> Appendix · E</div><div class="copy"><h2>Team, website and handover</h2></div><table class="tbl"><tbody>
-<tr><td>Named team</td><td>Account manager, strategist, designer, videographer, media buyer; bilingual Arabic/English. Bios <span class="tbc">TBC</span></td></tr>
-<tr><td>Credentials</td><td>Campaigns, success cases and showreel at <a href="https://deck.inhaus.ae/" target="_blank" rel="noopener">deck.inhaus.ae</a>. Company profile, three client references and 3D/animation samples <span class="tbc">TBC</span></td></tr>
+<tr><td>Named team</td><td><ul class="team"><li><b>Agustin Castellani</b> Creative Director</li><li><b>Josefina Lamas</b> Account Manager</li><li><b>Evelyn Zafar</b> Social Media Strategist</li><li><b>Uzair Khan</b> Designer</li><li><b>Rohan Karmacharya</b> Motion Graphics Designer</li><li><b>Akira Kyle</b> Videographer</li><li><b>Freddy Herrera</b> Photographer</li><li><b>Martin Franco</b> Media Buyer</li><li><b>Naiara Portillo</b> Social Media Executive</li><li><b>Mohammed Essam</b> Arabic Copywriter</li></ul>Bilingual Arabic/English delivery.</td></tr>
+<tr><td>Credentials</td><td>Campaigns, success cases and showreel at <a href="https://deck.inhaus.ae/" target="_blank" rel="noopener">deck.inhaus.ae</a>.</td></tr>
 <tr><td>Website</td><td>Bilingual, up to six pages, mobile PageSpeed 80+, on-page SEO, local parking schema, sitemap, Search Console; live before launch</td></tr>
 <tr><td>Tracking</td><td>GA4, Google Tag Manager, Meta and TikTok pixels, all on WAB-owned properties</td></tr>
 <tr><td>Ownership</td><td>Domain, hosting and SSL in WAB's name; full credentials and files handed over</td></tr>
 <tr><td>Licensing</td><td>Music, stock and talent licensed for paid use in the UAE for at least 12 months; raw footage and source files handed over</td></tr>
 <tr><td>Commercial</td><td>Pricing in the separate commercial proposal</td></tr>
 </tbody></table></section>
+<section class="slide thanks" id="thanks"><div class="mark">INHAUS</div><h2>Thank you.</h2><div class="links">
+<a href="https://inhaus.ae/" target="_blank" rel="noopener"><small>Website</small>inhaus.ae <i>↗</i></a>
+<a href="https://deck.inhaus.ae/" target="_blank" rel="noopener"><small>Our work</small>deck.inhaus.ae <i>↗</i></a>
+<a href="https://www.instagram.com/inhaus.ae" target="_blank" rel="noopener"><small>Instagram</small>@inhaus.ae <i>↗</i></a>
+</div></section>
 </main>
 
 
